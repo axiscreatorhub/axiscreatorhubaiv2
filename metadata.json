@@ -1,5 +1,14 @@
 {
-  "name": "AXIS",
-  "description": "The world's first AI Operating System for high-growth creators. Transcend the algorithm with viral hooks, aesthetic assets, and automated brand scaling.",
-  "requestFramePermissions": []
+  "name": "Faceless Digital Life",
+  "short_name": "Faceless",
+  "description": "The world-class unified AI operating system for influencers and digital marketers. Powered by Faceless Digital Life.",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#020617",
+  "theme_color": "#6366f1",
+  "requestFramePermissions": [
+    "camera",
+    "microphone",
+    "geolocation"
+  ]
 }
