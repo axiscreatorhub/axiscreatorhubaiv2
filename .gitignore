@@ -33,3 +33,7 @@ dist-ssr
 *.sln
 *.sw?
 >>>>>>> cfa78b3 (feat: Initialize Faceless Digital Life project)
+
+.next
+node_modules
+
