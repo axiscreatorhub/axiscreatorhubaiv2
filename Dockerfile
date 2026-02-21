@@ -1,46 +1,47 @@
-# Multi-stage build for optimized image
-FROM node:20-alpine AS builder
+# Stage 1: Build
+FROM node:22-slim AS builder
+
+# Install openssl for Prisma
+RUN apt-get update -y && apt-get install -y openssl ca-certificates && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 
-# Install dependencies
+# Copy package files and prisma schema
 COPY package*.json ./
-RUN npm ci
+COPY prisma ./prisma/
 
-# Copy source code
+# Install ALL dependencies (including devDeps for building)
+RUN npm install
+
+# Copy the rest of the application
 COPY . .
 
 # Generate Prisma Client
 RUN npx prisma generate
 
-# Build Frontend (Vite)
+# Build the frontend
 RUN npm run build
 
-# Build Backend (TSC)
-RUN npx tsc -p tsconfig.server.json
+# Stage 2: Production
+FROM node:22-slim
 
-# --- Production Stage ---
-FROM node:20-alpine AS runner
+# Install openssl for Prisma runtime
+RUN apt-get update -y && apt-get install -y openssl ca-certificates && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 
+# Set production environment
 ENV NODE_ENV=production
-ENV PORT=3000
 
-# Install production dependencies only
-COPY package*.json ./
-RUN npm ci --omit=dev
-
-# Copy built artifacts
+# Copy only the necessary files from the builder
+COPY --from=builder /app/package*.json ./
+COPY --from=builder /app/server.ts ./
 COPY --from=builder /app/dist ./dist
-COPY --from=builder /app/dist-server ./dist-server
 COPY --from=builder /app/prisma ./prisma
+COPY --from=builder /app/node_modules ./node_modules
 
-# Generate Prisma Client again for production environment
-RUN npx prisma generate
-
-# Expose port
+# Expose the port
 EXPOSE 3000
 
-# Start command: Run migrations then start server
-CMD npx prisma migrate deploy && node dist-server/server.js
+# Start the application
+CMD ["npm", "start"]
