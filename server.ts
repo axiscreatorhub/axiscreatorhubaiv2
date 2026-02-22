@@ -19,6 +19,21 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 async function startServer() {
+  console.log('Server starting...');
+
+  if (!process.env.DATABASE_URL) {
+    console.error('DATABASE_URL environment variable is not set.');
+    process.exit(1);
+  }
+  if (!process.env.RESEND_API_KEY) {
+    console.error('RESEND_API_KEY environment variable is not set.');
+    process.exit(1);
+  }
+  if (!process.env.PAYSTACK_SECRET) {
+    console.error('PAYSTACK_SECRET environment variable is not set.');
+    process.exit(1);
+  }
+
   const prisma = new PrismaClient();
   const resend = new Resend(process.env.RESEND_API_KEY);
   const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY || '' });
@@ -434,8 +449,9 @@ async function startServer() {
     });
   }
 
+  console.log(`Attempting to listen on port ${PORT}...`);
   app.listen(PORT, '0.0.0.0', () => {
-    console.log(`Server running on http://0.0.0.0:${PORT}`);
+    console.log(`Server successfully listening on http://0.0.0.0:${PORT}`);
   });
 }
 
