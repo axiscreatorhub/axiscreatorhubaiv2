@@ -47,7 +47,16 @@ async function startServer() {
     contentSecurityPolicy: false, // Disable for dev/vite
   }));
   app.use(cors({
-    origin: process.env.VITE_API_URL ? process.env.VITE_API_URL.split(',') : '*',
+    origin: [
+      'https://axiscreatorhub.com',
+      'https://www.axiscreatorhub.com',
+      'https://axis-creator-os-286752994656.us-west1.run.app',
+      'https://ais-dev-q46mabgoltokqvjyfvmeua-8331608079.europe-west2.run.app',
+      'https://axiscreatorhub.vercel.app',
+      'https://axiscreatorhub-git-main-avishaanns-projects.vercel.app',
+      'https://axiscreatorhub-capazsqrc-avishaanns-projects.vercel.app',
+      ...(process.env.VITE_API_URL ? process.env.VITE_API_URL.split(',') : [])
+    ],
     credentials: true,
   }));
   app.use(morgan('dev'));
