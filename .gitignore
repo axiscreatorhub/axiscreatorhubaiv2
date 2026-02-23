@@ -1,39 +1,26 @@
-<<<<<<< HEAD
+# env
+.env
+.env.*
+.env.local
+
+# node
 node_modules/
-build/
+**/node_modules/
+
+# build outputs
 dist/
-coverage/
-.DS_Store
-*.log
-.env*
+**/dist/
+backend/
+# Local / secrets
+.env
+.env.*
 !.env.example
-=======
-# Logs
-logs
-*.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-pnpm-debug.log*
-lerna-debug.log*
-
-node_modules
-dist
-dist-ssr
-*.local
-
-# Editor directories and files
-.vscode/*
-!.vscode/extensions.json
-.idea
-.DS_Store
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
-*.sw?
->>>>>>> cfa78b3 (feat: Initialize Faceless Digital Life project)
-
+# Next build output
 .next
+# Node
 node_modules
+# Vercel
+.vercel
+# Logs
+*.log
 
