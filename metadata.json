@@ -1,10 +1,14 @@
 {
-  "name": "AXIS Creator OS",
+  "name": "AXIS Creator Hub",
   "short_name": "AXIS",
-  "description": "The ultimate AI-powered Creator OS. From side hustle to full-time influencer. Generate viral scripts, aesthetic visuals, and high-converting video content for Instagram, TikTok, and YouTube.",
+  "description": "The elite AI-driven operating system for creators. Features high-fidelity Imagen 4.0 image generation and cinematic Veo 3.1 video production.",
   "start_url": "./",
   "display": "standalone",
   "background_color": "#020617",
   "theme_color": "#8b5cf6",
-  "requestFramePermissions": []
+  "requestFramePermissions": [
+    "camera",
+    "microphone",
+    "geolocation"
+  ]
 }
