@@ -3,9 +3,9 @@ import React from 'react';
 
 const VideoTestimonials: React.FC = () => {
   const testimonials = [
-    { name: "Jessica's Story", id: "dQw4w9WgXcQ" },
-    { name: "How Mark Scaled", id: "dQw4w9WgXcQ" },
-    { name: "Pure Skill ROI", id: "dQw4w9WgXcQ" }
+    { name: "Jessica's Story", id: "ysz5S6PUM-U" },
+    { name: "How Mark Scaled", id: "ysz5S6PUM-U" },
+    { name: "Pure Skill ROI", id: "ysz5S6PUM-U" }
   ];
 
   return (

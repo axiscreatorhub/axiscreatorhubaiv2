@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useState } from 'react';
 import Logo from './Logo';
 import LegalModal from './LegalModal';

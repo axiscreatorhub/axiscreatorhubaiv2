@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useState, useEffect } from 'react';
 import { GoogleGenAI } from "@google/genai";
 import ShareModal from './ShareModal';
@@ -78,20 +80,9 @@ const CreatorStudio: React.FC<{ isNexus?: boolean }> = ({ isNexus = false }) => 
     setIsProcessing(true);
     setResult(null);
 
-    const ai = new GoogleGenAI({ apiKey: process.env.NEXT_PUBLIC_GEMINI_API_KEY });
+    const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
     
     try {
-      // Check entitlements and increment usage before starting
-      const checkRes = await fetch('/api/entitlements/check', {
-        method: 'POST',
-        body: JSON.stringify({ type: activeTab === 'video' ? 'video' : 'image' })
-      });
-      
-      if (!checkRes.ok) {
-        const err = await checkRes.text();
-        throw new Error(err);
-      }
-
       if (activeTab === 'video') {
         let op = await ai.models.generateVideos({
           model: 'veo-3.1-fast-generate-preview',
@@ -109,9 +100,14 @@ const CreatorStudio: React.FC<{ isNexus?: boolean }> = ({ isNexus = false }) => 
         setUsage(prev => ({ ...prev, videos: prev.videos + 1 }));
       } else if (activeTab === 'visual') {
         const response = await ai.models.generateContent({
-          model: 'gemini-2.5-flash-image',
+          model: 'gemini-3-pro-image-preview',
           contents: { parts: [{ text: `AXIS ASSET: Elite ${artStyle} render of ${prompt}. Modern digital content, high-fidelity.` }] },
-          config: { imageConfig: { aspectRatio: '9:16' } }
+          config: { 
+            imageConfig: { 
+              aspectRatio: '9:16',
+              imageSize: '1K'
+            } 
+          }
         });
         const part = response.candidates?.[0]?.content?.parts?.find(p => p.inlineData);
         if (part?.inlineData) {

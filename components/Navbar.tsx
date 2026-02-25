@@ -28,7 +28,7 @@ const Navbar: React.FC = () => {
           </div>
 
           <div className="flex items-center gap-4">
-            <a href="#trial" className="hidden lg:flex px-8 py-3.5 bg-white text-slate-950 rounded-2xl font-black text-[10px] transition-all hover:scale-105 uppercase tracking-widest shadow-xl">
+            <a href="#checkout" className="hidden lg:flex px-8 py-3.5 bg-white text-slate-950 rounded-2xl font-black text-[10px] transition-all hover:scale-105 uppercase tracking-widest shadow-xl">
               Start Free
             </a>
             <button className="md:hidden p-3 bg-white/5 rounded-xl text-white">

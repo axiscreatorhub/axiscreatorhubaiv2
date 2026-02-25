@@ -1,4 +1,6 @@
 
+'use client';
+
 import React, { useState } from 'react';
 import { CourseModule } from '../types';
 
@@ -8,7 +10,7 @@ const modules: CourseModule[] = [
     title: 'High-Tier Identity',
     duration: '42:15',
     thumbnail: 'https://images.unsplash.com/photo-1542744173-8e7e53415bb0?auto=format&fit=crop&q=80&w=800',
-    videoUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
+    videoUrl: 'https://www.youtube.com/embed/ysz5S6PUM-U',
     description: 'Constructing a digital presence that commands authority and attracts premium partnerships.',
     resources: [
       { name: 'Identity Audit Checklist', type: 'PDF', size: '2.4 MB' },
@@ -20,7 +22,7 @@ const modules: CourseModule[] = [
     title: 'The Conversion Engine',
     duration: '58:30',
     thumbnail: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=800',
-    videoUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
+    videoUrl: 'https://www.youtube.com/embed/ysz5S6PUM-U',
     description: 'Technical deep-dive into landing page psychology and high-converting funnel structures.',
     resources: [
       { name: 'Funnel Logic Map', type: 'PDF', size: '4.8 MB' },
@@ -32,7 +34,7 @@ const modules: CourseModule[] = [
     title: 'Honest Ad Strategy',
     duration: '34:10',
     thumbnail: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&q=80&w=800',
-    videoUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
+    videoUrl: 'https://www.youtube.com/embed/ysz5S6PUM-U',
     description: 'How to scale on Meta and Google without the usual "guru" fluff or misleading promises.',
     resources: [
       { name: 'Campaign Budget Planner', type: 'Template', size: '0.8 MB' },
@@ -46,7 +48,7 @@ const CoursePortal: React.FC = () => {
   const [isSidebarVisible, setIsSidebarVisible] = useState(true);
 
   return (
-    <section className="py-32 bg-white">
+    <section id="academy" className="py-32 bg-white">
       <div className="max-w-7xl mx-auto px-4">
         <div className="mb-16 text-center">
           <h2 className="text-4xl font-bold text-slate-900 serif italic mb-4">Curriculum Preview</h2>
