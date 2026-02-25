@@ -1,0 +1,13 @@
+﻿
+createTime: '2026-02-21T10:11:01.780290413Z'
+filename: cloudbuild.yaml
+github:
+  name: axiscreatorhub
+  owner: axiscreatorhub
+  push:
+    branch: ^main$
+id: 75ece2d7-391a-4383-a56c-48796447f998
+includeBuildLogs: INCLUDE_BUILD_LOGS_WITH_STATUS
+name: AXISHUB
+resourceName: projects/gen-lang-client-0391150577/locations/global/triggers/75ece2d7-391a-4383-a56c-48796447f998
+serviceAccount: projects/gen-lang-client-0391150577/serviceAccounts/286752994656-compute@developer.gserviceaccount.com

@@ -1,4 +1,4 @@
-# ---- deps ----
+﻿# ---- deps ----
 FROM node:20-bookworm-slim AS deps
 WORKDIR /app
 COPY package*.json ./
@@ -17,11 +17,11 @@ WORKDIR /app
 ENV NODE_ENV=production
 ENV PORT=8080
 
-# Copy runtime assets for Next.js
 COPY --from=build /app/package*.json ./
 COPY --from=build /app/node_modules ./node_modules
 COPY --from=build /app/.next ./.next
 COPY --from=build /app/public ./public
+COPY --from=build /app/next.config.* ./ 2>/dev/null || true
 
 EXPOSE 8080
-CMD ["npm", "start"]
+CMD ["npm","start"]
