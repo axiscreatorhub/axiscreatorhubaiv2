@@ -1,0 +1,105 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+// Models
+
+model User {
+  id        String   @id @default(uuid())
+  clerkId   String   @unique
+  email     String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  brandProfile BrandProfile?
+  subscription Subscription?
+  usage        UsageLedger[]
+  hooks        HookBatch[]
+  assets       AssetJob[]
+
+  @@index([clerkId])
+  @@index([email])
+  @@map("users")
+}
+
+model BrandProfile {
+  id        String   @id @default(uuid())
+  userId    String   @unique
+  tone      String?
+  niche     String?
+  audience  String?
+  platforms String   @default("[]") // JSON string for array
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("brand_profiles")
+}
+
+model Subscription {
+  id                     String    @id @default(uuid())
+  userId                 String    @unique
+  plan                   String    @default("FREE") // Enum: FREE, PRO, BUSINESS
+  status                 String    @default("ACTIVE") // Enum: ACTIVE, CANCELED, PAST_DUE, TRIALING
+  paystackCustomerId     String?
+  paystackSubscriptionId String?
+  currentPeriodEnd       DateTime?
+  createdAt              DateTime  @default(now())
+  updatedAt              DateTime  @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("subscriptions")
+}
+
+model UsageLedger {
+  id        String      @id @default(uuid())
+  userId    String
+  feature   String      // Enum: HOOK_GEN, ASSET_GEN
+  credits   Int
+  day       DateTime    @default(now()) // Truncate to YYYY-MM-DD in logic
+  createdAt DateTime    @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, day])
+  @@map("usage_ledger")
+}
+
+model HookBatch {
+  id        String   @id @default(uuid())
+  userId    String
+  topic     String
+  tone      String?
+  format    String?
+  hooks     String   // JSON string for array of hooks
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("hook_batches")
+}
+
+model AssetJob {
+  id         String    @id @default(uuid())
+  userId     String
+  type       String    // e.g. "THUMBNAIL", "STORY"
+  prompt     String
+  outputUrls String    @default("[]") // JSON string for array of URLs
+  status     String    @default("PENDING") // Enum: PENDING, PROCESSING, COMPLETED, FAILED
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("asset_jobs")
+}
