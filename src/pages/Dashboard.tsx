@@ -9,7 +9,8 @@ import {
   Settings, 
   LogOut, 
   Plus,
-  Zap
+  Zap,
+  Loader2
 } from 'lucide-react';
 
 export default function Dashboard() {

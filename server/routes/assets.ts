@@ -1,46 +1,60 @@
 import express from 'express';
-import prisma from '../db/prisma.ts';
-import { requireAuth } from '../middleware/auth.ts';
-import { generateAssetPrompt } from '../services/ai.ts';
 import { z } from 'zod';
+import { requireAuth } from '../middleware/auth.ts';
+import prisma from '../db/prisma.ts';
+import { imageService } from '../services/ai/image.ts';
 
 const router = express.Router();
 
 const generateSchema = z.object({
-  type: z.string(),
+  type: z.enum(['THUMBNAIL', 'AVATAR', 'COVER']),
   prompt: z.string(),
+  style: z.string().optional(),
 });
 
 router.post('/generate', requireAuth, async (req, res) => {
   try {
-    const { type, prompt } = generateSchema.parse(req.body);
+    const { type, prompt, style } = generateSchema.parse(req.body);
     const userId = req.user.id;
 
-    // Get brand profile for style context
-    const brand = await prisma.brandProfile.findUnique({ where: { userId } });
-
-    // Refine prompt
-    const refinedPrompt = await generateAssetPrompt(type, prompt, brand);
-
-    // Create Job
+    // Create Job first to track it
     const job = await prisma.assetJob.create({
       data: {
         userId,
         type,
-        prompt: refinedPrompt || prompt,
-        status: 'PENDING',
+        prompt,
+        status: 'PROCESSING',
         outputUrls: '[]',
       }
     });
 
-    // In a real app, we'd push to a queue (BullMQ/SQS).
-    // Here we'll just mock the processing or trigger it async.
-    // For MVP, let's just return the job ID.
-    
-    res.json({ jobId: job.id, status: 'PENDING', refinedPrompt });
+    // Generate image using modular service
+    try {
+      const imageUrl = await imageService.generate(prompt, style);
+      
+      // Update job with success
+      await prisma.assetJob.update({
+        where: { id: job.id },
+        data: {
+          status: 'COMPLETED',
+          outputUrls: JSON.stringify([imageUrl]),
+        }
+      });
+      
+      res.json({ jobId: job.id, status: 'COMPLETED', outputUrls: [imageUrl] });
+    } catch (genError) {
+      console.error("Image generation failed", genError);
+      await prisma.assetJob.update({
+        where: { id: job.id },
+        data: { status: 'FAILED' }
+      });
+      // Return error but with job context
+      res.status(500).json({ error: 'Image generation failed', jobId: job.id });
+    }
+
   } catch (error) {
-    console.error('Asset generation error:', error);
-    res.status(500).json({ error: 'Failed to queue asset generation' });
+    console.error('Generate asset error:', error);
+    res.status(500).json({ error: 'Failed to generate asset' });
   }
 });
 

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAppAuth, apiClient } from '../../lib/api';
 import { Loader2, ArrowRight } from 'lucide-react';

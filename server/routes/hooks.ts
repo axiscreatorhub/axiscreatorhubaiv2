@@ -1,8 +1,9 @@
 import express from 'express';
-import prisma from '../db/prisma.ts';
-import { requireAuth } from '../middleware/auth.ts';
-import { generateHooks } from '../services/ai.ts';
 import { z } from 'zod';
+import { requireAuth } from '../middleware/auth.ts';
+import prisma from '../db/prisma.ts';
+import { textService } from '../services/ai/text.ts';
+import { PROMPT_TEMPLATES } from '../services/promptTemplates.ts';
 
 const router = express.Router();
 
@@ -17,18 +18,43 @@ router.post('/generate', requireAuth, async (req, res) => {
     const { topic, tone, format } = generateSchema.parse(req.body);
     const userId = req.user.id;
 
-    // Check rate limit / credits here (omitted for brevity, but schema supports UsageLedger)
+    // Fetch brand profile
+    const brandProfile = await prisma.brandProfile.findUnique({
+      where: { userId }
+    });
+
+    // Default brand context if not set
+    const brandContext = {
+      name: brandProfile?.name || 'Creator',
+      niche: brandProfile?.niche || 'General',
+      tone: tone || brandProfile?.tone || 'Professional',
+      audience: brandProfile?.audience || 'General Audience',
+      platforms: brandProfile?.platforms ? JSON.parse(brandProfile.platforms) : ['Instagram']
+    } as any;
     
-    // Generate hooks
-    const hooks = await generateHooks(topic, tone || 'Professional', format || 'Listicle');
+    // Use modular service with prompt templates
+    const { systemInstruction, userPrompt } = PROMPT_TEMPLATES.viralHooks(topic, brandContext);
+    
+    const rawText = await textService.generate(userPrompt, brandContext, systemInstruction);
+    
+    // Parse JSON output
+    let hooks = [];
+    try {
+      const cleanText = (rawText || "[]").replace(/```json/g, '').replace(/```/g, '').trim();
+      hooks = JSON.parse(cleanText);
+    } catch (e) {
+      console.error("Failed to parse hooks JSON", e);
+      // Fallback: try to split by newlines if JSON fails
+      hooks = rawText ? rawText.split('\n').filter(line => line.trim().length > 0) : [];
+    }
 
     // Store batch
     const batch = await prisma.hookBatch.create({
       data: {
         userId,
         topic,
-        tone,
-        format,
+        tone: brandContext.tone,
+        format: format || 'Listicle',
         hooks: JSON.stringify(hooks),
       }
     });

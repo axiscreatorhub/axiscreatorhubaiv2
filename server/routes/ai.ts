@@ -1,65 +1,35 @@
 import express from 'express';
-import { generateText } from '../services/ai.ts';
-import { authenticateToken, AuthRequest } from '../middleware/auth.ts';
-import db from '../db/index.ts';
-import { z } from 'zod';
+import { requireAuth } from '../middleware/auth.ts';
+import prisma from '../db/prisma.ts';
+import { textService } from '../services/ai/text.ts';
 
 const router = express.Router();
 
-const generateHooksSchema = z.object({
-  topic: z.string().min(3),
-  tone: z.string().optional(),
-  format: z.string().optional(),
-});
-
-router.post('/generate/hooks', authenticateToken, async (req: AuthRequest, res) => {
+router.post('/chat', requireAuth, async (req, res) => {
   try {
-    const { topic, tone, format } = generateHooksSchema.parse(req.body);
-    const user = req.user!;
+    const { message } = req.body;
+    const userId = req.user.id;
 
-    // Check usage limits (mock implementation)
-    // In a real app, we would query the DB for usage counts
-
-    const systemInstruction = `You are a viral content expert for social media (Instagram, TikTok, YouTube Shorts).
-    Your goal is to generate scroll-stopping hooks based on the user's topic.
+    // Fetch brand context
+    const brand = await prisma.brandProfile.findUnique({ where: { userId } });
     
-    Tone: ${tone || 'Professional yet engaging'}
-    Format: ${format || 'Listicle/Educational'}
-    
-    Output format: Return a JSON array of 5 strings. Do not include markdown code blocks. Just the raw JSON array.`;
+    // Use the modular text service
+    // We need to map the Prisma brand object to the BrandProfileContext interface if needed,
+    // or the service handles partials.
+    const brandContext = brand ? {
+      name: brand.name,
+      niche: brand.niche,
+      tone: brand.tone,
+      audience: brand.audience,
+      platforms: brand.platforms ? JSON.parse(brand.platforms) : []
+    } : undefined;
 
-    const prompt = `Generate 5 viral hooks about: "${topic}".`;
+    const reply = await textService.chat(message, [], brandContext);
 
-    const text = await generateText(prompt, systemInstruction);
-    
-    // Parse the response to ensure it's JSON
-    let hooks = [];
-    try {
-      // Remove markdown code blocks if present
-      const cleanText = text.replace(/```json/g, '').replace(/```/g, '').trim();
-      hooks = JSON.parse(cleanText);
-    } catch (e) {
-      console.error('Failed to parse AI response:', text);
-      return res.status(500).json({ error: 'Failed to generate valid hooks' });
-    }
-
-    // Save to DB (optional for MVP, but good for history)
-    const insert = db.prepare('INSERT INTO generated_content (id, user_id, type, content_data, metadata) VALUES (?, ?, ?, ?, ?)');
-    insert.run(
-      crypto.randomUUID(), 
-      user.id, 
-      'HOOK', 
-      JSON.stringify(hooks), 
-      JSON.stringify({ topic, tone, format })
-    );
-
-    res.json({ hooks });
+    res.json({ reply });
   } catch (error) {
-    if (error instanceof z.ZodError) {
-      return res.status(400).json({ error: (error as any).errors });
-    }
-    console.error('Generate hooks error:', error);
-    res.status(500).json({ error: 'Server error' });
+    console.error('Chat error:', error);
+    res.status(500).json({ error: 'Failed to chat' });
   }
 });
 

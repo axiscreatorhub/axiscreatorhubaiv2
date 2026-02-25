@@ -33,6 +33,7 @@ model User {
 model BrandProfile {
   id        String   @id @default(uuid())
   userId    String   @unique
+  name      String?
   tone      String?
   niche     String?
   audience  String?
