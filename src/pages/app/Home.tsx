@@ -1,9 +1,24 @@
+import { motion } from 'motion/react';
+import { Link } from 'react-router-dom';
+import { 
+  PenTool, 
+  Image as ImageIcon, 
+  Video, 
+  Mic, 
+  Sparkles, 
+  ArrowRight, 
+  Clock,
+  TrendingUp,
+  Zap,
+  Play
+} from 'lucide-react';
+
 export default function HomePage() {
   const quickActions = [
-    { label: 'Viral Hook', icon: PenTool, color: 'from-[#FCAF45] to-[#E1306C]', href: '/app/create' },
-    { label: 'Thumbnail', icon: ImageIcon, color: 'from-[#833AB4] to-[#C13584]', href: '/app/create' },
-    { label: 'Caption', icon: Sparkles, color: 'from-[#405DE6] to-[#5851DB]', href: '/app/edit' },
-    { label: 'Idea Gen', icon: Zap, color: 'from-[#FFDC80] to-[#FCAF45]', href: '/app/assist' },
+    { label: 'Viral Hook', icon: PenTool, color: 'from-[#3B82F6] to-[#8B5CF6]', href: '/app/create' },
+    { label: 'Thumbnail', icon: ImageIcon, color: 'from-[#8B5CF6] to-[#EC4899]', href: '/app/create' },
+    { label: 'Caption', icon: Sparkles, color: 'from-[#EC4899] to-[#3B82F6]', href: '/app/edit' },
+    { label: 'Idea Gen', icon: Zap, color: 'from-[#3B82F6] via-[#8B5CF6] to-[#EC4899]', href: '/app/assist' },
   ];
 
   const recentProjects = [
@@ -26,24 +41,24 @@ export default function HomePage() {
         animate={{ opacity: 1, y: 0 }}
         className="mb-12 text-center md:text-left relative"
       >
-        <div className="absolute -top-20 -left-20 w-64 h-64 bg-[#E1306C]/20 rounded-full blur-[100px] animate-blob" />
+        <div className="absolute -top-20 -left-20 w-64 h-64 bg-[#8B5CF6]/20 rounded-full blur-[100px] animate-blob" />
         
-        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 mb-6 backdrop-blur-md">
-          <span className="w-2 h-2 rounded-full bg-[#E1306C] animate-pulse"></span>
-          <span className="text-xs font-medium tracking-wide text-gray-300 uppercase">The Viral Content OS</span>
+        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#8B5CF6]/10 border border-[#8B5CF6]/20 mb-6 backdrop-blur-md">
+          <span className="w-2 h-2 rounded-full bg-[#8B5CF6] animate-pulse"></span>
+          <span className="text-xs font-bold tracking-[0.2em] text-[#8B5CF6] uppercase font-display">THE CREATOR ENGINE</span>
         </div>
 
-        <h1 className="text-5xl md:text-7xl font-bold mb-6 tracking-tight relative z-10 leading-tight">
+        <h1 className="text-6xl md:text-8xl font-display font-bold mb-8 tracking-tighter relative z-10 leading-[0.85]">
           <span className="text-white">
-            SCALE YOUR
+            TRANSCEND THE
           </span>
           <br />
-          <span className="text-gradient-brand">
-            CREATOR CAREER
+          <span className="text-gradient-viral">
+            ALGORITHM.
           </span>
         </h1>
-        <p className="text-gray-400 text-lg md:text-xl max-w-2xl relative z-10 mb-8 leading-relaxed">
-          From side hustle to full-time influencer. AXIS is the ultimate AI-powered Creator OS designed to help you dominate Instagram, TikTok, and YouTube with ease and excellence.
+        <p className="text-gray-400 text-lg md:text-2xl max-w-2xl relative z-10 mb-10 leading-relaxed font-accent font-light">
+          Your journey from creator to icon starts here. AXIS is the definitive AI Operating System for those who refuse to be ignored.
         </p>
 
         <div className="flex flex-col sm:flex-row gap-4 relative z-10">
@@ -96,7 +111,7 @@ export default function HomePage() {
         <div className="lg:col-span-2 space-y-6">
           <div className="flex items-center justify-between">
             <h2 className="text-2xl font-bold flex items-center gap-3">
-              <Clock size={24} className="text-[#FCAF45]" />
+              <Clock size={24} className="text-[#3B82F6]" />
               Recent Projects
             </h2>
             <Link to="/app/create" className="text-sm text-gray-400 hover:text-white transition-colors">View All</Link>
@@ -111,7 +126,7 @@ export default function HomePage() {
                 transition={{ delay: 0.2 + (i * 0.1) }}
                 className="flex items-center gap-6 p-5 glass-card rounded-2xl hover:bg-white/10 transition-colors cursor-pointer group"
               >
-                <div className="w-12 h-12 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-gray-400 group-hover:text-white group-hover:border-[#E1306C]/50 transition-all">
+                <div className="w-12 h-12 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-gray-400 group-hover:text-white group-hover:border-[#8B5CF6]/50 transition-all">
                   <project.icon size={24} />
                 </div>
                 <div className="flex-1">
@@ -130,7 +145,7 @@ export default function HomePage() {
         <div className="space-y-6">
           <div className="flex items-center justify-between">
             <h2 className="text-2xl font-bold flex items-center gap-3">
-              <TrendingUp size={24} className="text-[#E1306C]" />
+              <TrendingUp size={24} className="text-[#EC4899]" />
               Trending
             </h2>
           </div>
@@ -142,9 +157,9 @@ export default function HomePage() {
                 initial={{ opacity: 0, x: 10 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.3 + (i * 0.1) }}
-                className="p-5 glass-card rounded-2xl relative overflow-hidden group cursor-pointer hover:border-[#E1306C]/30 transition-all"
+                className="p-5 glass-card rounded-2xl relative overflow-hidden group cursor-pointer hover:border-[#8B5CF6]/30 transition-all"
               >
-                <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity text-[#E1306C]">
+                <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity text-[#EC4899]">
                   <Sparkles size={48} />
                 </div>
                 <h3 className="font-bold text-white text-lg mb-2">{template.title}</h3>
@@ -157,11 +172,11 @@ export default function HomePage() {
           </div>
 
           {/* AI Assistant Teaser */}
-          <div className="p-6 rounded-3xl bg-gradient-to-br from-[#833AB4]/40 to-[#405DE6]/40 border border-[#833AB4]/30 backdrop-blur-md relative overflow-hidden group">
-            <div className="absolute inset-0 bg-[#833AB4]/10 opacity-0 group-hover:opacity-100 transition-opacity" />
+          <div className="p-6 rounded-3xl bg-gradient-to-br from-[#8B5CF6]/40 to-[#3B82F6]/40 border border-[#8B5CF6]/30 backdrop-blur-md relative overflow-hidden group">
+            <div className="absolute inset-0 bg-[#8B5CF6]/10 opacity-0 group-hover:opacity-100 transition-opacity" />
             
             <div className="flex items-center gap-4 mb-4 relative z-10">
-              <div className="w-10 h-10 rounded-full bg-[#833AB4] flex items-center justify-center shadow-lg shadow-[#833AB4]/30">
+              <div className="w-10 h-10 rounded-full bg-[#8B5CF6] flex items-center justify-center shadow-lg shadow-[#8B5CF6]/30">
                 <Sparkles size={20} className="text-white" />
               </div>
               <span className="font-bold text-white text-lg">AI Assistant</span>

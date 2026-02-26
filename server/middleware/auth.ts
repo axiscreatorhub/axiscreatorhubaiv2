@@ -70,7 +70,9 @@ const mockAuthMiddleware = async (req: Request, res: Response, next: NextFunctio
 export const requireAuth = (req: Request, res: Response, next: NextFunction) => {
   // If Clerk keys are present, use Clerk
   if (process.env.CLERK_PUBLISHABLE_KEY && process.env.CLERK_SECRET_KEY) {
-    return ClerkExpressRequireAuth()(req, res, async () => {
+    const options = process.env.CLERK_JWT_KEY ? { jwtKey: process.env.CLERK_JWT_KEY } : {};
+    
+    return ClerkExpressRequireAuth(options)(req, res, async () => {
       try {
         if (!req.auth?.userId) {
           return res.status(401).json({ error: 'Unauthenticated' });
@@ -82,19 +84,35 @@ export const requireAuth = (req: Request, res: Response, next: NextFunction) => 
         });
 
         if (!user) {
-          // JIT Provisioning
-          // Note: In production, you might want to use webhooks for this
-          // But for simple start, we can check/create here
-          // We need email, which might not be in req.auth. 
-          // For now, we'll create with a placeholder or fetch from Clerk API if needed.
-          // Simplified: We assume user exists or created via webhook. 
-          // If not found, we return 401 or create a stub.
+          // JIT Provisioning: Create user in our DB if they exist in Clerk but not in our DB
+          // We can't easily get the email from req.auth alone without a Clerk API call,
+          // but we can create a stub and let the onboarding process fill it, 
+          // or just use a placeholder email for now.
           
-          // Let's return 401 and expect the frontend to have triggered a sync or webhook
-          // OR create a stub if we can't get email.
-          // For this MVP, let's assume the webhook handles creation, 
-          // but if missing, we might fail.
-          return res.status(401).json({ error: 'User not found in database. Please sign up.' });
+          user = await prisma.user.create({
+            data: {
+              clerkId: req.auth.userId,
+              email: `${req.auth.userId}@clerk.user`, // Placeholder, should be updated via webhook or onboarding
+            }
+          });
+
+          // Initialize brand profile
+          await prisma.brandProfile.create({
+            data: {
+              userId: user.id,
+              name: 'New Creator',
+            }
+          });
+          
+          // Initialize usage
+          await prisma.usageLedger.create({
+            data: {
+              userId: user.id,
+              feature: 'INITIAL_GRANT',
+              credits: 0,
+              day: new Date()
+            }
+          });
         }
 
         req.user = user;

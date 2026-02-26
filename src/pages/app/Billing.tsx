@@ -32,7 +32,7 @@ export default function BillingPage() {
   return (
     <div className="max-w-5xl mx-auto">
       <div className="text-center mb-16">
-        <h1 className="text-3xl font-bold mb-4">Simple, Transparent Pricing</h1>
+        <h1 className="text-4xl font-bold mb-4 bg-gradient-to-r from-[#3B82F6] via-[#8B5CF6] to-[#EC4899] bg-clip-text text-transparent">Simple, Transparent Pricing</h1>
         <p className="text-gray-400">Start for free, upgrade as you grow.</p>
       </div>
 
@@ -41,12 +41,12 @@ export default function BillingPage() {
           <div 
             key={plan.id}
             className={cn(
-              "p-8 rounded-2xl border relative overflow-hidden flex flex-col",
-              plan.id === 'PRO' ? "bg-zinc-900 border-orange-500" : "bg-black border-white/10"
+              "p-8 rounded-3xl border relative overflow-hidden flex flex-col transition-all hover:scale-[1.02]",
+              plan.id === 'PRO' ? "bg-[#0A0E1A]/80 border-[#8B5CF6] shadow-[0_0_30px_rgba(139,92,246,0.2)]" : "bg-[#0A0E1A]/40 border-white/10"
             )}
           >
             {plan.id === 'PRO' && (
-              <div className="absolute top-0 right-0 bg-orange-500 text-black text-xs font-bold px-3 py-1 rounded-bl-lg">
+              <div className="absolute top-0 right-0 bg-gradient-to-r from-[#3B82F6] to-[#8B5CF6] text-white text-[10px] font-black px-4 py-1.5 rounded-bl-xl tracking-widest">
                 POPULAR
               </div>
             )}
@@ -60,14 +60,14 @@ export default function BillingPage() {
             <ul className="space-y-3 mb-8 flex-1">
               {plan.features.map((feat, i) => (
                 <li key={i} className="flex items-center gap-2 text-sm text-gray-300">
-                  <Check size={16} className="text-orange-500 shrink-0" />
+                  <Check size={16} className="text-[#3B82F6] shrink-0" />
                   {feat}
                 </li>
               ))}
             </ul>
 
             {plan.id === 'FREE' ? (
-              <button className="w-full py-3 rounded-lg font-medium bg-white/10 text-white cursor-default">
+              <button className="w-full py-3 rounded-xl font-bold bg-white/5 text-gray-500 cursor-default border border-white/5">
                 Current Plan
               </button>
             ) : (
@@ -75,9 +75,9 @@ export default function BillingPage() {
                 onClick={() => handleUpgrade(plan.id)}
                 disabled={!!loading}
                 className={cn(
-                  "w-full py-3 rounded-lg font-medium transition-colors flex items-center justify-center gap-2",
+                  "w-full py-3 rounded-xl font-bold transition-all flex items-center justify-center gap-2 shadow-lg",
                   plan.id === 'PRO' 
-                    ? "bg-orange-500 text-black hover:bg-orange-400" 
+                    ? "bg-gradient-to-r from-[#3B82F6] to-[#8B5CF6] text-white hover:opacity-90" 
                     : "bg-white text-black hover:bg-gray-200"
                 )}
               >

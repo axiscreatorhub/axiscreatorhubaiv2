@@ -36,11 +36,11 @@ interface Platform {
 }
 
 const PLATFORMS: Platform[] = [
-  { id: 'tiktok', name: 'TikTok', icon: Smartphone, color: 'text-pink-500', ratio: '9:16', maxDuration: '10m', formats: ['MP4'] },
-  { id: 'instagram', name: 'Reels', icon: Instagram, color: 'text-purple-500', ratio: '9:16', maxDuration: '90s', formats: ['MP4'] },
-  { id: 'youtube', name: 'Shorts', icon: Youtube, color: 'text-red-500', ratio: '9:16', maxDuration: '60s', formats: ['MP4'] },
-  { id: 'linkedin', name: 'LinkedIn', icon: Linkedin, color: 'text-blue-500', ratio: '4:5', maxDuration: '10m', formats: ['MP4'] },
-  { id: 'twitter', name: 'X / Twitter', icon: Twitter, color: 'text-sky-500', ratio: '16:9', maxDuration: '2m 20s', formats: ['MP4'] },
+  { id: 'tiktok', name: 'TikTok', icon: Smartphone, color: 'text-[#EC4899]', ratio: '9:16', maxDuration: '10m', formats: ['MP4'] },
+  { id: 'instagram', name: 'Reels', icon: Instagram, color: 'text-[#8B5CF6]', ratio: '9:16', maxDuration: '90s', formats: ['MP4'] },
+  { id: 'youtube', name: 'Shorts', icon: Youtube, color: 'text-[#EC4899]', ratio: '9:16', maxDuration: '60s', formats: ['MP4'] },
+  { id: 'linkedin', name: 'LinkedIn', icon: Linkedin, color: 'text-[#3B82F6]', ratio: '4:5', maxDuration: '10m', formats: ['MP4'] },
+  { id: 'twitter', name: 'X / Twitter', icon: Twitter, color: 'text-[#3B82F6]', ratio: '16:9', maxDuration: '2m 20s', formats: ['MP4'] },
 ];
 
 const PROJECTS = [
@@ -87,7 +87,7 @@ export default function PublishPage() {
 
       <div className="mb-6 flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold bg-gradient-to-r from-green-400 to-emerald-600 bg-clip-text text-transparent">
+          <h1 className="text-3xl font-bold bg-gradient-to-r from-[#3B82F6] via-[#8B5CF6] to-[#EC4899] bg-clip-text text-transparent">
             Publish & Export
           </h1>
           <p className="text-gray-400 text-sm">Optimize and distribute your content.</p>
@@ -115,7 +115,7 @@ export default function PublishPage() {
                 className={cn(
                   "p-3 rounded-xl border text-left transition-all group relative overflow-hidden",
                   selectedProject.id === project.id 
-                    ? "bg-white/10 border-green-500 ring-1 ring-green-500" 
+                    ? "bg-white/10 border-[#8B5CF6] ring-1 ring-[#8B5CF6]" 
                     : "bg-zinc-900 border-white/10 hover:border-white/30"
                 )}
               >
@@ -129,8 +129,8 @@ export default function PublishPage() {
                 <p className="text-xs text-gray-500">{project.date}</p>
                 
                 {selectedProject.id === project.id && (
-                  <div className="absolute top-2 right-2 w-5 h-5 bg-green-500 rounded-full flex items-center justify-center">
-                    <Check size={12} className="text-black" />
+                  <div className="absolute top-2 right-2 w-5 h-5 bg-[#8B5CF6] rounded-full flex items-center justify-center">
+                    <Check size={12} className="text-white" />
                   </div>
                 )}
               </button>
@@ -192,7 +192,7 @@ export default function PublishPage() {
                   className={cn(
                     "flex items-center gap-3 p-3 rounded-xl border transition-all",
                     selectedPlatform.id === platform.id 
-                      ? "bg-white/10 border-green-500" 
+                      ? "bg-white/10 border-[#8B5CF6]" 
                       : "bg-black border-white/10 hover:border-white/30"
                   )}
                 >
@@ -203,7 +203,7 @@ export default function PublishPage() {
                     <div className="font-bold text-sm">{platform.name}</div>
                     <div className="text-xs text-gray-500">{platform.ratio} • Max {platform.maxDuration}</div>
                   </div>
-                  {selectedPlatform.id === platform.id && <Check size={16} className="text-green-500" />}
+                  {selectedPlatform.id === platform.id && <Check size={16} className="text-[#8B5CF6]" />}
                 </button>
               ))}
             </div>
@@ -238,7 +238,7 @@ export default function PublishPage() {
                   onClick={() => setSettings({...settings, burnCaptions: !settings.burnCaptions})}
                   className={cn(
                     "w-10 h-5 rounded-full relative transition-colors",
-                    settings.burnCaptions ? "bg-green-500" : "bg-zinc-700"
+                    settings.burnCaptions ? "bg-[#8B5CF6]" : "bg-zinc-700"
                   )}
                 >
                   <div className={cn(
@@ -254,12 +254,12 @@ export default function PublishPage() {
           <div className="p-4 bg-gradient-to-br from-zinc-800 to-black rounded-xl border border-white/10">
             <div className="flex items-center justify-between mb-3">
               <h3 className="font-bold text-sm flex items-center gap-2">
-                <ImageIcon size={16} className="text-blue-400" />
+                <ImageIcon size={16} className="text-[#3B82F6]" />
                 Thumbnail
               </h3>
               <button 
                 onClick={() => setShowThumbnailGen(!showThumbnailGen)}
-                className="text-xs text-blue-400 hover:text-blue-300"
+                className="text-xs text-[#3B82F6] hover:text-[#3B82F6]/80"
               >
                 {showThumbnailGen ? 'Hide' : 'Generate'}
               </button>
@@ -276,7 +276,7 @@ export default function PublishPage() {
                   <div className="aspect-video bg-black rounded-lg mb-2 border border-white/10 flex items-center justify-center">
                     <span className="text-xs text-gray-500">AI Generated Preview</span>
                   </div>
-                  <button className="w-full py-2 bg-blue-500/20 text-blue-400 text-xs font-bold rounded-lg hover:bg-blue-500/30 transition-colors">
+                  <button className="w-full py-2 bg-[#3B82F6]/20 text-[#3B82F6] text-xs font-bold rounded-lg hover:bg-[#3B82F6]/30 transition-colors">
                     Regenerate
                   </button>
                 </motion.div>
@@ -289,7 +289,7 @@ export default function PublishPage() {
             <button 
               onClick={handleExport}
               disabled={exporting}
-              className="w-full py-4 bg-white text-black font-bold rounded-xl hover:bg-gray-200 transition-colors flex items-center justify-center gap-2 disabled:opacity-50"
+              className="w-full py-4 bg-gradient-to-r from-[#3B82F6] via-[#8B5CF6] to-[#EC4899] text-white font-bold rounded-xl hover:opacity-90 transition-all flex items-center justify-center gap-2 disabled:opacity-50 shadow-lg"
             >
               {exporting ? <Loader2 className="animate-spin" /> : <Download size={20} />}
               {exporting ? 'Rendering...' : 'Export Video'}

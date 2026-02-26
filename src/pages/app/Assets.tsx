@@ -43,16 +43,16 @@ export default function AssetsPage() {
       />
 
       <div className="mb-8">
-        <h1 className="text-3xl font-bold mb-2">Asset Studio</h1>
+        <h1 className="text-3xl font-bold mb-2 bg-gradient-to-r from-[#3B82F6] via-[#8B5CF6] to-[#EC4899] bg-clip-text text-transparent">Asset Studio</h1>
         <p className="text-gray-400">Generate professional thumbnails and social assets.</p>
       </div>
 
-      <div className="bg-zinc-900 border border-white/10 rounded-2xl p-6 mb-8 relative overflow-hidden">
+      <div className="bg-[#0A0E1A]/60 backdrop-blur-xl border border-white/10 rounded-3xl p-6 mb-8 relative overflow-hidden shadow-2xl">
         {!isPro && (
           <div className="absolute inset-0 bg-black/60 backdrop-blur-sm z-10 flex items-center justify-center">
             <button 
               onClick={() => setShowUpgrade(true)}
-              className="bg-white text-black px-6 py-3 rounded-full font-bold flex items-center gap-2 hover:bg-gray-200 transition-colors"
+              className="bg-gradient-to-r from-[#3B82F6] to-[#8B5CF6] text-white px-6 py-3 rounded-xl font-bold flex items-center gap-2 hover:opacity-90 transition-all shadow-lg"
             >
               <Lock size={18} />
               Unlock Asset Studio
@@ -65,13 +65,13 @@ export default function AssetsPage() {
             value={prompt}
             onChange={(e) => setPrompt(e.target.value)}
             placeholder="Describe your thumbnail..."
-            className="flex-1 bg-black border border-white/10 rounded-lg px-4 py-3 text-white focus:border-orange-500 outline-none"
+            className="flex-1 bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-[#8B5CF6] outline-none transition-all"
             disabled={!isPro}
           />
           <button
             onClick={handleGenerate}
             disabled={loading || !prompt || !isPro}
-            className="bg-orange-500 text-black font-bold px-6 py-3 rounded-lg hover:bg-orange-400 transition-colors flex items-center gap-2 disabled:opacity-50"
+            className="bg-gradient-to-r from-[#3B82F6] via-[#8B5CF6] to-[#EC4899] text-white font-bold px-6 py-3 rounded-xl hover:opacity-90 transition-all flex items-center gap-2 disabled:opacity-50 shadow-lg"
           >
             {loading ? <Loader2 className="animate-spin" /> : <ImageIcon size={18} />}
             Generate

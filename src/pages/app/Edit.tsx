@@ -35,12 +35,12 @@ interface Tool {
 }
 
 const TOOLS: Tool[] = [
-  { id: 'captions', label: 'Auto Captions', icon: Type, color: 'text-yellow-400' },
-  { id: 'voice', label: 'AI Voiceover', icon: Mic, color: 'text-purple-400' },
-  { id: 'avatar', label: 'AI Avatar', icon: User, color: 'text-pink-400' },
-  { id: 'style', label: 'Style Transfer', icon: Wand2, color: 'text-blue-400' },
-  { id: 'bg-remove', label: 'Remove BG', icon: ImageMinus, color: 'text-green-400' },
-  { id: 'cut', label: 'Magic Cut', icon: Scissors, color: 'text-red-400' },
+  { id: 'captions', label: 'Auto Captions', icon: Type, color: 'text-[#3B82F6]' },
+  { id: 'voice', label: 'AI Voiceover', icon: Mic, color: 'text-[#8B5CF6]' },
+  { id: 'avatar', label: 'AI Avatar', icon: User, color: 'text-[#EC4899]' },
+  { id: 'style', label: 'Style Transfer', icon: Wand2, color: 'text-[#3B82F6]' },
+  { id: 'bg-remove', label: 'Remove BG', icon: ImageMinus, color: 'text-[#8B5CF6]' },
+  { id: 'cut', label: 'Magic Cut', icon: Scissors, color: 'text-[#EC4899]' },
 ];
 
 const VOICES = [
@@ -56,9 +56,9 @@ const AVATARS = [
 ];
 
 const CAPTION_STYLES = [
-  { id: 'hormozi', name: 'Hormozi', class: 'font-black text-yellow-400 uppercase text-stroke-black' },
+  { id: 'hormozi', name: 'Hormozi', class: 'font-black text-[#8B5CF6] uppercase text-stroke-black' },
   { id: 'minimal', name: 'Minimal', class: 'font-medium text-white bg-black/50 px-2 rounded' },
-  { id: 'karaoke', name: 'Karaoke', class: 'font-bold text-purple-400' },
+  { id: 'karaoke', name: 'Karaoke', class: 'font-bold text-[#EC4899]' },
 ];
 
 // --- Components ---
@@ -113,7 +113,7 @@ export default function EditPage() {
         </button>
 
         <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold mb-2 bg-gradient-to-r from-blue-400 to-cyan-600 bg-clip-text text-transparent">
+          <h1 className="text-4xl font-bold mb-2 bg-gradient-to-r from-[#3B82F6] via-[#8B5CF6] to-[#EC4899] bg-clip-text text-transparent">
             AI Magic Editor
           </h1>
           <p className="text-gray-400">Upload a video or image to start editing.</p>
@@ -184,7 +184,7 @@ export default function EditPage() {
             </button>
             <button 
               onClick={() => setPreviewMode('edited')}
-              className={cn("px-3 py-1.5 rounded-lg text-xs font-bold transition-colors", previewMode === 'edited' ? "bg-gradient-to-r from-blue-500 to-cyan-500 text-white" : "text-gray-400 hover:text-white")}
+              className={cn("px-3 py-1.5 rounded-lg text-xs font-bold transition-colors", previewMode === 'edited' ? "bg-gradient-to-r from-[#3B82F6] to-[#8B5CF6] text-white" : "text-gray-400 hover:text-white")}
             >
               Magic Edit
             </button>
@@ -248,8 +248,8 @@ export default function EditPage() {
           </div>
           <div className="flex-1 flex gap-1 items-center relative">
             {/* Playhead */}
-            <div className="absolute left-[30%] top-0 bottom-0 w-0.5 bg-orange-500 z-10">
-              <div className="absolute -top-1 -left-1.5 w-3 h-3 bg-orange-500 rotate-45" />
+            <div className="absolute left-[30%] top-0 bottom-0 w-0.5 bg-[#8B5CF6] z-10">
+              <div className="absolute -top-1 -left-1.5 w-3 h-3 bg-[#8B5CF6] rotate-45" />
             </div>
             
             {/* Tracks */}
@@ -307,7 +307,7 @@ export default function EditPage() {
                         ))}
                       </div>
                     </div>
-                    <button className="w-full py-3 bg-yellow-500 text-black font-bold rounded-xl hover:bg-yellow-400">
+                    <button className="w-full py-3 bg-gradient-to-r from-[#3B82F6] to-[#8B5CF6] text-white font-bold rounded-xl hover:opacity-90">
                       Generate Captions
                     </button>
                   </>
@@ -325,7 +325,7 @@ export default function EditPage() {
                             className={cn(
                               "w-full p-3 rounded-xl border text-left flex items-center justify-between transition-all",
                               selectedVoice.id === voice.id 
-                                ? "bg-white/10 border-purple-500" 
+                                ? "bg-white/10 border-[#8B5CF6]" 
                                 : "bg-black border-white/10 hover:border-white/30"
                             )}
                           >
@@ -333,7 +333,7 @@ export default function EditPage() {
                               <div className="font-bold text-sm">{voice.name}</div>
                               <div className="text-xs text-gray-500">{voice.lang}</div>
                             </div>
-                            {selectedVoice.id === voice.id && <Check size={16} className="text-purple-500" />}
+                            {selectedVoice.id === voice.id && <Check size={16} className="text-[#8B5CF6]" />}
                           </button>
                         ))}
                       </div>
@@ -341,11 +341,11 @@ export default function EditPage() {
                     <div>
                       <label className="block text-sm text-gray-400 mb-3">Script</label>
                       <textarea 
-                        className="w-full h-32 bg-black border border-white/10 rounded-xl p-3 text-sm text-white focus:border-purple-500 outline-none resize-none"
+                        className="w-full h-32 bg-black border border-white/10 rounded-xl p-3 text-sm text-white focus:border-[#8B5CF6] outline-none resize-none"
                         placeholder="Type what you want the AI to say..."
                       />
                     </div>
-                    <button className="w-full py-3 bg-purple-500 text-white font-bold rounded-xl hover:bg-purple-400">
+                    <button className="w-full py-3 bg-gradient-to-r from-[#8B5CF6] to-[#3B82F6] text-white font-bold rounded-xl hover:opacity-90">
                       Generate Audio
                     </button>
                   </>
@@ -363,7 +363,7 @@ export default function EditPage() {
                             className={cn(
                               "p-2 rounded-xl border transition-all relative overflow-hidden group",
                               selectedAvatar.id === avatar.id 
-                                ? "border-pink-500 ring-1 ring-pink-500" 
+                                ? "border-[#EC4899] ring-1 ring-[#EC4899]" 
                                 : "border-white/10 hover:border-white/30"
                             )}
                           >
@@ -373,7 +373,7 @@ export default function EditPage() {
                         ))}
                       </div>
                     </div>
-                    <button className="w-full py-3 bg-pink-500 text-white font-bold rounded-xl hover:bg-pink-400">
+                    <button className="w-full py-3 bg-gradient-to-r from-[#EC4899] to-[#8B5CF6] text-white font-bold rounded-xl hover:opacity-90">
                       Add to Scene
                     </button>
                   </>

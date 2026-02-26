@@ -36,23 +36,23 @@ export default function HooksPage() {
   return (
     <div className="max-w-4xl mx-auto">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold mb-2">Viral Hook Generator</h1>
+        <h1 className="text-3xl font-bold mb-2 bg-gradient-to-r from-[#3B82F6] via-[#8B5CF6] to-[#EC4899] bg-clip-text text-transparent">Viral Hook Generator</h1>
         <p className="text-gray-400">Generate scroll-stopping hooks for your next video.</p>
       </div>
 
-      <div className="bg-zinc-900 border border-white/10 rounded-2xl p-6 mb-8">
+      <div className="bg-[#0A0E1A]/60 backdrop-blur-xl border border-white/10 rounded-3xl p-6 mb-8 shadow-2xl">
         <div className="flex gap-4">
           <input
             value={topic}
             onChange={(e) => setTopic(e.target.value)}
             placeholder="What is your video about? (e.g. Productivity hacks for students)"
-            className="flex-1 bg-black border border-white/10 rounded-lg px-4 py-3 text-white focus:border-orange-500 outline-none"
+            className="flex-1 bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-[#8B5CF6] outline-none transition-all"
             onKeyDown={(e) => e.key === 'Enter' && handleGenerate()}
           />
           <button
             onClick={handleGenerate}
             disabled={loading || !topic}
-            className="bg-orange-500 text-black font-bold px-6 py-3 rounded-lg hover:bg-orange-400 transition-colors flex items-center gap-2 disabled:opacity-50"
+            className="bg-gradient-to-r from-[#3B82F6] via-[#8B5CF6] to-[#EC4899] text-white font-bold px-6 py-3 rounded-xl hover:opacity-90 transition-all flex items-center gap-2 disabled:opacity-50 shadow-lg"
           >
             {loading ? <Loader2 className="animate-spin" /> : <Zap size={18} />}
             Generate

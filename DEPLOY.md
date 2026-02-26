@@ -38,6 +38,7 @@ This application uses a custom Express server for the backend and Vite for the f
     Run this from your terminal:
     ```bash
     gcloud run deploy axis-creator-hub \
+      --project gen-lang-client-0266522175 \
       --source . \
       --platform managed \
       --region europe-west1 \

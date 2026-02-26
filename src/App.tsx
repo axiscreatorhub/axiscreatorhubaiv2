@@ -22,10 +22,15 @@ import MonetizePage from './pages/app/Monetize';
 // Wrapper to conditionally render ClerkProvider or just children (for Mock Auth)
 function AuthProvider({ children }: { children: React.ReactNode }) {
   const clerkKey = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
+  const frontendApi = import.meta.env.VITE_CLERK_FRONTEND_API;
   
   if (clerkKey) {
     return (
-      <ClerkProvider publishableKey={clerkKey} afterSignOutUrl="/">
+      <ClerkProvider 
+        publishableKey={clerkKey} 
+        afterSignOutUrl="/"
+        {...(frontendApi ? { frontendApi } : {})}
+      >
         {children}
       </ClerkProvider>
     );

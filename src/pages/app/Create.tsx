@@ -30,19 +30,19 @@ type Format = {
 };
 
 const FORMATS: Format[] = [
-  { id: 'tiktok', label: 'TikTok Video', icon: Smartphone, description: 'Viral short-form video scripts', color: 'from-pink-500 to-cyan-500', endpoint: '/hooks/generate' },
-  { id: 'reel', label: 'Instagram Reel', icon: Video, description: 'Trending audio & visual concepts', color: 'from-purple-500 to-pink-500', endpoint: '/hooks/generate' },
-  { id: 'short', label: 'YouTube Short', icon: Youtube, description: 'High-retention short scripts', color: 'from-red-500 to-orange-500', endpoint: '/hooks/generate' },
-  { id: 'image', label: 'AI Image', icon: ImageIcon, description: 'Thumbnails & post visuals', color: 'from-blue-500 to-indigo-500', endpoint: '/assets/generate' },
-  { id: 'carousel', label: 'Carousel', icon: Layers, description: 'Multi-slide educational posts', color: 'from-yellow-500 to-orange-500', endpoint: '/hooks/generate' },
-  { id: 'script', label: 'Long Script', icon: FileText, description: 'Full length video scripts', color: 'from-green-500 to-emerald-500', endpoint: '/hooks/generate' },
+  { id: 'tiktok', label: 'TikTok Video', icon: Smartphone, description: 'Viral short-form video scripts', color: 'from-[#3B82F6] to-[#8B5CF6]', endpoint: '/hooks/generate' },
+  { id: 'reel', label: 'Instagram Reel', icon: Video, description: 'Trending audio & visual concepts', color: 'from-[#8B5CF6] to-[#EC4899]', endpoint: '/hooks/generate' },
+  { id: 'short', label: 'YouTube Short', icon: Youtube, description: 'High-retention short scripts', color: 'from-[#EC4899] to-[#3B82F6]', endpoint: '/hooks/generate' },
+  { id: 'image', label: 'AI Image', icon: ImageIcon, description: 'Thumbnails & post visuals', color: 'from-[#3B82F6] via-[#8B5CF6] to-[#EC4899]', endpoint: '/assets/generate' },
+  { id: 'carousel', label: 'Carousel', icon: Layers, description: 'Multi-slide educational posts', color: 'from-[#8B5CF6] to-[#3B82F6]', endpoint: '/hooks/generate' },
+  { id: 'script', label: 'Long Script', icon: FileText, description: 'Full length video scripts', color: 'from-[#EC4899] to-[#8B5CF6]', endpoint: '/hooks/generate' },
 ];
 
 const STYLES = [
-  { id: 'minimal', label: 'Minimalist', preview: 'bg-zinc-800' },
-  { id: 'bold', label: 'Bold & Loud', preview: 'bg-orange-500' },
-  { id: 'professional', label: 'Professional', preview: 'bg-blue-600' },
-  { id: 'cinematic', label: 'Cinematic', preview: 'bg-purple-600' },
+  { id: 'minimal', label: 'Minimalist', preview: 'bg-[#0A0E1A]' },
+  { id: 'bold', label: 'Bold & Loud', preview: 'bg-[#EC4899]' },
+  { id: 'professional', label: 'Professional', preview: 'bg-[#3B82F6]' },
+  { id: 'cinematic', label: 'Cinematic', preview: 'bg-[#8B5CF6]' },
 ];
 
 const SAMPLE_PROMPTS = [
@@ -204,7 +204,7 @@ export default function CreatePage() {
                     value={prompt}
                     onChange={(e) => setPrompt(e.target.value)}
                     placeholder="e.g. 3 ways to stay productive working from home..."
-                    className="w-full h-32 bg-black border border-white/10 rounded-xl p-4 text-white focus:border-orange-500 outline-none resize-none"
+                    className="w-full h-32 bg-black border border-white/10 rounded-xl p-4 text-white focus:border-[#8B5CF6] outline-none resize-none"
                   />
                   <div className="mt-2 flex gap-2 overflow-x-auto pb-2">
                     {SAMPLE_PROMPTS.map((p, i) => (
@@ -230,7 +230,7 @@ export default function CreatePage() {
                         onClick={() => setSelectedStyle(style)}
                         className={`p-3 rounded-xl border transition-all text-left ${
                           selectedStyle.id === style.id
-                            ? 'bg-white/10 border-orange-500'
+                            ? 'bg-white/10 border-[#8B5CF6]'
                             : 'bg-black border-white/10 hover:border-white/30'
                         }`}
                       >
@@ -244,7 +244,7 @@ export default function CreatePage() {
                 <button
                   onClick={handleGenerate}
                   disabled={!prompt}
-                  className="w-full py-4 bg-gradient-to-r from-orange-500 to-pink-600 rounded-xl font-bold text-lg hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                  className="w-full py-4 bg-gradient-to-r from-[#3B82F6] via-[#8B5CF6] to-[#EC4899] rounded-xl font-bold text-lg hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                 >
                   <Wand2 size={20} />
                   Generate Magic
@@ -265,9 +265,9 @@ export default function CreatePage() {
           >
             <div className="relative w-24 h-24 mb-8">
               <div className="absolute inset-0 rounded-full border-4 border-white/10" />
-              <div className="absolute inset-0 rounded-full border-4 border-t-orange-500 animate-spin" />
+              <div className="absolute inset-0 rounded-full border-4 border-t-[#8B5CF6] animate-spin" />
               <div className="absolute inset-0 flex items-center justify-center">
-                <Sparkles className="text-orange-500 animate-pulse" size={32} />
+                <Sparkles className="text-[#8B5CF6] animate-pulse" size={32} />
               </div>
             </div>
             <h2 className="text-2xl font-bold mb-2">Crafting your content...</h2>
@@ -322,11 +322,11 @@ export default function CreatePage() {
                       <div className="space-y-4">
                         <h3 className="font-bold text-lg text-gray-200">Generated Scripts/Hooks</h3>
                         {result.hooks.map((hook: string, i: number) => (
-                          <div key={i} className="p-4 bg-black border border-white/10 rounded-xl hover:border-orange-500/50 transition-colors cursor-pointer group">
+                          <div key={i} className="p-4 bg-black border border-white/10 rounded-xl hover:border-[#8B5CF6]/50 transition-colors cursor-pointer group">
                             <div className="flex justify-between items-start gap-4">
                               <p className="text-gray-300 leading-relaxed">{hook}</p>
                               <button className="opacity-0 group-hover:opacity-100 p-2 hover:bg-white/10 rounded-lg transition-all">
-                                <Play size={16} className="text-orange-500" />
+                                <Play size={16} className="text-[#3B82F6]" />
                               </button>
                             </div>
                           </div>

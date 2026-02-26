@@ -59,7 +59,13 @@ async function startServer() {
     app.use(vite.middlewares);
   } else {
     // Production static file serving
-    app.use(express.static(path.resolve(__dirname, 'dist')));
+    const distPath = path.resolve(__dirname, 'dist');
+    app.use(express.static(distPath));
+    
+    // SPA Fallback
+    app.get('*', (req, res) => {
+      res.sendFile(path.resolve(distPath, 'index.html'));
+    });
   }
 
   app.listen(PORT, '0.0.0.0', () => {

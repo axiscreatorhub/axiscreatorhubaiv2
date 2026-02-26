@@ -36,12 +36,12 @@ export default function TutorialOverlay({ moduleName, steps, onComplete }: Tutor
           initial={{ opacity: 0, scale: 0.9, y: 20 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.9, y: 20 }}
-          className="bg-zinc-900 border border-white/10 rounded-2xl shadow-2xl max-w-md w-full overflow-hidden relative"
+          className="bg-[#0A0E1A] border border-white/10 rounded-3xl shadow-2xl max-w-md w-full overflow-hidden relative"
         >
           {/* Progress Bar */}
           <div className="h-1 bg-zinc-800 w-full">
             <motion.div 
-              className="h-full bg-orange-500"
+              className="h-full bg-gradient-to-r from-[#3B82F6] to-[#8B5CF6]"
               initial={{ width: 0 }}
               animate={{ width: `${((currentStep + 1) / steps.length) * 100}%` }}
             />
@@ -55,7 +55,7 @@ export default function TutorialOverlay({ moduleName, steps, onComplete }: Tutor
           </button>
 
           <div className="p-8">
-            <div className="w-12 h-12 bg-gradient-to-br from-orange-500 to-pink-500 rounded-xl flex items-center justify-center mb-6 shadow-lg shadow-orange-500/20">
+            <div className="w-12 h-12 bg-gradient-to-br from-[#3B82F6] to-[#8B5CF6] rounded-xl flex items-center justify-center mb-6 shadow-lg shadow-[#3B82F6]/20">
               <span className="font-bold text-white text-xl">{currentStep + 1}</span>
             </div>
 
@@ -67,7 +67,7 @@ export default function TutorialOverlay({ moduleName, steps, onComplete }: Tutor
             {stepData.image && (
               <div className="mb-6 rounded-xl overflow-hidden border border-white/10 bg-black/50 aspect-video flex items-center justify-center relative group">
                  {/* Placeholder for demo visual */}
-                 <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 to-blue-500/10" />
+                 <div className="absolute inset-0 bg-gradient-to-br from-[#8B5CF6]/10 to-[#3B82F6]/10" />
                  <Play className="text-white/50 group-hover:text-white transition-colors" size={32} />
                  <span className="absolute bottom-2 text-xs text-gray-500">Demo Preview</span>
               </div>
@@ -87,7 +87,7 @@ export default function TutorialOverlay({ moduleName, steps, onComplete }: Tutor
               )}
               <button
                 onClick={handleNext}
-                className="flex-1 py-3 bg-orange-500 text-black font-bold rounded-xl hover:bg-orange-400 transition-colors flex items-center justify-center gap-2"
+                className="flex-1 py-3 bg-gradient-to-r from-[#3B82F6] to-[#8B5CF6] text-white font-bold rounded-xl hover:opacity-90 transition-all flex items-center justify-center gap-2 shadow-lg"
               >
                 {currentStep === steps.length - 1 ? 'Get Started' : 'Next'}
                 {currentStep === steps.length - 1 ? <Check size={18} /> : <ChevronRight size={18} />}

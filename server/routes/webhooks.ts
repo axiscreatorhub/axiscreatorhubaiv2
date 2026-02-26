@@ -49,8 +49,43 @@ router.post('/paystack', async (req, res) => {
     
     res.sendStatus(200);
   } catch (error) {
-    console.error('Webhook error:', error);
+    console.error('Paystack Webhook error:', error);
     res.sendStatus(500);
+  }
+});
+
+// Clerk Webhook
+router.post('/clerk', async (req, res) => {
+  // In production, you MUST verify the Svix signature
+  // For now, we'll implement the logic to handle user.created and user.updated
+  const { data, type } = req.body;
+
+  try {
+    if (type === 'user.created' || type === 'user.updated') {
+      const { id, email_addresses, first_name, last_name } = data;
+      const email = email_addresses[0]?.email_address;
+
+      await prisma.user.upsert({
+        where: { clerkId: id },
+        update: { email },
+        create: {
+          clerkId: id,
+          email,
+        }
+      });
+    }
+
+    if (type === 'user.deleted') {
+      const { id } = data;
+      await prisma.user.delete({
+        where: { clerkId: id }
+      }).catch(() => {}); // Ignore if already deleted
+    }
+
+    res.json({ success: true });
+  } catch (error) {
+    console.error('Clerk Webhook error:', error);
+    res.status(500).json({ error: 'Webhook processing failed' });
   }
 });
 

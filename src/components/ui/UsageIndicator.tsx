@@ -10,7 +10,7 @@ interface UsageIndicatorProps {
   className?: string;
 }
 
-export default function UsageIndicator({ label, current, limit, color = 'bg-orange-500', className }: UsageIndicatorProps) {
+export default function UsageIndicator({ label, current, limit, color = 'bg-[#8B5CF6]', className }: UsageIndicatorProps) {
   const percentage = Math.min(100, (current / limit) * 100);
   const isNearLimit = percentage > 80;
   const isAtLimit = percentage >= 100;

@@ -33,43 +33,43 @@ const QUICK_PROMPTS = [
     label: 'Viral Hooks', 
     prompt: 'Write 5 viral hooks for a video about: ', 
     icon: Zap, 
-    color: 'text-yellow-400', 
-    bg: 'bg-yellow-400/10 border-yellow-400/20' 
+    color: 'text-[#3B82F6]', 
+    bg: 'bg-[#3B82F6]/10 border-[#3B82F6]/20' 
   },
   { 
     label: 'Content Ideas', 
     prompt: 'Give me 3 unique content ideas for my niche about: ', 
     icon: Lightbulb, 
-    color: 'text-orange-400', 
-    bg: 'bg-orange-400/10 border-orange-400/20' 
+    color: 'text-[#8B5CF6]', 
+    bg: 'bg-[#8B5CF6]/10 border-[#8B5CF6]/20' 
   },
   { 
     label: 'Caption Writer', 
     prompt: 'Write an engaging Instagram caption for this topic: ', 
     icon: Type, 
-    color: 'text-pink-400', 
-    bg: 'bg-pink-400/10 border-pink-400/20' 
+    color: 'text-[#EC4899]', 
+    bg: 'bg-[#EC4899]/10 border-[#EC4899]/20' 
   },
   { 
     label: 'Trend Finder', 
     prompt: 'What are the current trending topics in the creator economy?', 
     icon: TrendingUp, 
-    color: 'text-green-400', 
-    bg: 'bg-green-400/10 border-green-400/20' 
+    color: 'text-[#3B82F6]', 
+    bg: 'bg-[#3B82F6]/10 border-[#3B82F6]/20' 
   },
   { 
     label: 'Hashtags', 
     prompt: 'Generate a set of high-reach hashtags for: ', 
     icon: Hash, 
-    color: 'text-blue-400', 
-    bg: 'bg-blue-400/10 border-blue-400/20' 
+    color: 'text-[#8B5CF6]', 
+    bg: 'bg-[#8B5CF6]/10 border-[#8B5CF6]/20' 
   },
   { 
     label: 'Script Polish', 
     prompt: 'Improve this script to be more punchy and concise: ', 
     icon: Sparkles, 
-    color: 'text-purple-400', 
-    bg: 'bg-purple-400/10 border-purple-400/20' 
+    color: 'text-[#EC4899]', 
+    bg: 'bg-[#EC4899]/10 border-[#EC4899]/20' 
   },
 ];
 
@@ -163,7 +163,7 @@ export default function AssistPage() {
 
       <div className="mb-4 flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold bg-gradient-to-r from-purple-400 to-indigo-600 bg-clip-text text-transparent">
+          <h1 className="text-3xl font-bold bg-gradient-to-r from-[#3B82F6] to-[#8B5CF6] bg-clip-text text-transparent">
             AI Assistant
           </h1>
           <p className="text-gray-400 text-sm">Your 24/7 creative strategist.</p>
@@ -191,8 +191,8 @@ export default function AssistPage() {
         <div className="flex-1 overflow-y-auto p-6 space-y-6 scrollbar-thin scrollbar-thumb-zinc-700 scrollbar-track-transparent">
           {messages.length === 0 ? (
             <div className="h-full flex flex-col items-center justify-center p-8 text-center">
-              <div className="w-20 h-20 bg-gradient-to-br from-purple-500/20 to-indigo-500/20 rounded-3xl flex items-center justify-center mb-6 border border-purple-500/30">
-                <Bot size={40} className="text-purple-400" />
+              <div className="w-20 h-20 bg-gradient-to-br from-[#8B5CF6]/20 to-[#3B82F6]/20 rounded-3xl flex items-center justify-center mb-6 border border-[#8B5CF6]/30">
+                <Bot size={40} className="text-[#8B5CF6]" />
               </div>
               <h2 className="text-2xl font-bold mb-2">How can I help you create?</h2>
               <p className="text-gray-400 max-w-md mb-8">
@@ -236,7 +236,7 @@ export default function AssistPage() {
                   <div className={cn(
                     "w-10 h-10 rounded-full flex items-center justify-center shrink-0 shadow-lg",
                     msg.role === 'assistant' 
-                      ? "bg-gradient-to-br from-purple-600 to-indigo-600 text-white" 
+                      ? "bg-gradient-to-br from-[#8B5CF6] to-[#3B82F6] text-white" 
                       : "bg-zinc-800 text-gray-400"
                   )}>
                     {msg.role === 'assistant' ? <Bot size={20} /> : <User size={20} />}
@@ -245,8 +245,8 @@ export default function AssistPage() {
                   <div className={cn(
                     "max-w-[85%] md:max-w-[75%] rounded-2xl p-5 shadow-md relative group",
                     msg.role === 'assistant' 
-                      ? "bg-black border border-white/10 text-gray-200" 
-                      : "bg-purple-600 text-white"
+                      ? "bg-[#05070A] border border-white/10 text-gray-200" 
+                      : "bg-[#8B5CF6] text-white"
                   )}>
                     <p className="whitespace-pre-wrap text-sm leading-relaxed">{msg.content}</p>
                     
@@ -275,14 +275,14 @@ export default function AssistPage() {
               
               {loading && (
                 <div className="flex gap-4">
-                   <div className="w-10 h-10 rounded-full bg-gradient-to-br from-purple-600 to-indigo-600 text-white flex items-center justify-center shrink-0">
+                   <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#8B5CF6] to-[#3B82F6] text-white flex items-center justify-center shrink-0">
                     <Bot size={20} />
                   </div>
-                  <div className="bg-black border border-white/10 p-5 rounded-2xl">
+                  <div className="bg-[#05070A] border border-white/10 p-5 rounded-2xl">
                     <div className="flex gap-1.5">
-                      <span className="w-2 h-2 bg-purple-500 rounded-full animate-bounce" />
-                      <span className="w-2 h-2 bg-purple-500 rounded-full animate-bounce delay-75" />
-                      <span className="w-2 h-2 bg-purple-500 rounded-full animate-bounce delay-150" />
+                      <span className="w-2 h-2 bg-[#8B5CF6] rounded-full animate-bounce" />
+                      <span className="w-2 h-2 bg-[#8B5CF6] rounded-full animate-bounce delay-75" />
+                      <span className="w-2 h-2 bg-[#8B5CF6] rounded-full animate-bounce delay-150" />
                     </div>
                   </div>
                 </div>
@@ -293,8 +293,8 @@ export default function AssistPage() {
         </div>
 
         {/* Input Area */}
-        <div className="p-4 border-t border-white/10 bg-zinc-950/50 backdrop-blur-md">
-          <div className="relative flex items-end gap-2 bg-zinc-900 border border-white/10 rounded-2xl p-2 focus-within:border-purple-500/50 transition-colors shadow-inner">
+        <div className="p-4 border-t border-white/10 bg-[#05070A]/50 backdrop-blur-md">
+          <div className="relative flex items-end gap-2 bg-zinc-900 border border-white/10 rounded-2xl p-2 focus-within:border-[#8B5CF6]/50 transition-colors shadow-inner">
             <input
               ref={inputRef}
               value={input}
@@ -307,7 +307,7 @@ export default function AssistPage() {
             <button
               onClick={() => handleSend()}
               disabled={loading || !input.trim()}
-              className="p-3 bg-gradient-to-r from-purple-600 to-indigo-600 text-white rounded-xl hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed shadow-lg"
+              className="p-3 bg-gradient-to-r from-[#8B5CF6] to-[#3B82F6] text-white rounded-xl hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed shadow-lg"
             >
               <Send size={18} />
             </button>
