@@ -2,14 +2,12 @@
   "name": "axis-creator-hub",
   "version": "7.1.0",
   "private": true,
-
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
   },
-
   "dependencies": {
     "@clerk/nextjs": "^6.38.2",
     "@google/genai": "^0.3.0",

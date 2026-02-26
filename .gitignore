@@ -11,6 +11,11 @@ node_modules/
 dist/
 **/dist/
 backend/
+.next
+node_modules
+.env*
+
+
 # Local / secrets
 .env
 .env.*
