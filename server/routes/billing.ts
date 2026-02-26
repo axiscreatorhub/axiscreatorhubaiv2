@@ -3,12 +3,13 @@ import prisma from '../db/prisma.ts';
 import { requireAuth } from '../middleware/auth.ts';
 import axios from 'axios';
 import { z } from 'zod';
+import { getPlan } from '../config/plans.ts';
 
 const router = express.Router();
 const PAYSTACK_SECRET = process.env.PAYSTACK_SECRET_KEY;
 
 const initSchema = z.object({
-  plan: z.enum(['PRO', 'BUSINESS']),
+  plan: z.enum(['PRO', 'CREATOR_PRO']),
 });
 
 router.post('/paystack/initialize', requireAuth, async (req, res) => {
@@ -17,11 +18,12 @@ router.post('/paystack/initialize', requireAuth, async (req, res) => {
   }
 
   try {
-    const { plan } = initSchema.parse(req.body);
+    const { plan: planId } = initSchema.parse(req.body);
     const user = req.user;
+    const plan = getPlan(planId);
 
-    // Define amount based on plan (in kobo)
-    const amount = plan === 'PRO' ? 1900 * 100 : 4900 * 100; // Example amounts
+    // Amount is already in kobo (cents) in the config
+    const amount = plan.price; 
 
     const response = await axios.post(
       'https://api.paystack.co/transaction/initialize',
@@ -30,7 +32,7 @@ router.post('/paystack/initialize', requireAuth, async (req, res) => {
         amount,
         metadata: {
           userId: user.id,
-          plan,
+          plan: planId,
         },
         callback_url: `${process.env.APP_URL}/dashboard?payment=success`,
       },

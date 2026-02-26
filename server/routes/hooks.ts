@@ -4,6 +4,7 @@ import { requireAuth } from '../middleware/auth.ts';
 import prisma from '../db/prisma.ts';
 import { textService } from '../services/ai/text.ts';
 import { PROMPT_TEMPLATES } from '../services/promptTemplates.ts';
+import { usageService } from '../services/usage.ts';
 
 const router = express.Router();
 
@@ -17,6 +18,9 @@ router.post('/generate', requireAuth, async (req, res) => {
   try {
     const { topic, tone, format } = generateSchema.parse(req.body);
     const userId = req.user.id;
+
+    // Check usage limits
+    await usageService.checkLimit(userId, 'HOOK_GEN');
 
     // Fetch brand profile
     const brandProfile = await prisma.brandProfile.findUnique({
@@ -60,16 +64,13 @@ router.post('/generate', requireAuth, async (req, res) => {
     });
 
     // Log usage
-    await prisma.usageLedger.create({
-      data: {
-        userId,
-        feature: 'HOOK_GEN',
-        credits: 1,
-      }
-    });
+    await usageService.trackUsage(userId, 'HOOK_GEN', 1);
 
     res.json({ batchId: batch.id, hooks });
   } catch (error) {
+    if (error instanceof Error && error.message.includes('Limit reached')) {
+      return res.status(403).json({ error: error.message, code: 'LIMIT_REACHED' });
+    }
     console.error('Hook generation error:', error);
     res.status(500).json({ error: 'Failed to generate hooks' });
   }

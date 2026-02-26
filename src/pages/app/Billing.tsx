@@ -1,17 +1,19 @@
 import { useAppAuth, apiClient } from '../../lib/api';
 import { Check, Loader2 } from 'lucide-react';
 import { useState } from 'react';
+import { PLANS, PlanId } from '../../lib/plans';
+import { cn } from '../../lib/utils';
 
 export default function BillingPage() {
   const { getToken } = useAppAuth();
   const [loading, setLoading] = useState<string | null>(null);
 
-  const handleUpgrade = async (plan: string) => {
-    setLoading(plan);
+  const handleUpgrade = async (planId: string) => {
+    setLoading(planId);
     try {
       const res = await apiClient('/billing/paystack/initialize', {
         method: 'POST',
-        body: JSON.stringify({ plan })
+        body: JSON.stringify({ plan: planId })
       }, getToken);
       
       if (res.authorization_url) {
@@ -25,6 +27,8 @@ export default function BillingPage() {
     }
   };
 
+  const planList = [PLANS.FREE, PLANS.PRO, PLANS.CREATOR_PRO];
+
   return (
     <div className="max-w-5xl mx-auto">
       <div className="text-center mb-16">
@@ -33,75 +37,55 @@ export default function BillingPage() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-        {/* Free Plan */}
-        <div className="p-8 rounded-2xl bg-black border border-white/10">
-          <h3 className="text-xl font-bold mb-2">Free</h3>
-          <div className="flex items-baseline gap-1 mb-6">
-            <span className="text-4xl font-bold">$0</span>
-          </div>
-          <ul className="space-y-3 mb-8">
-            {['1 Brand Profile', '5 Hook Batches/day', 'Community Support'].map((feat, i) => (
-              <li key={i} className="flex items-center gap-2 text-sm text-gray-300">
-                <Check size={16} className="text-orange-500" />
-                {feat}
-              </li>
-            ))}
-          </ul>
-          <button className="w-full py-3 rounded-lg font-medium bg-white/10 text-white cursor-default">
-            Current Plan
-          </button>
-        </div>
-
-        {/* Pro Plan */}
-        <div className="p-8 rounded-2xl bg-zinc-900 border border-orange-500 relative overflow-hidden">
-          <div className="absolute top-0 right-0 bg-orange-500 text-black text-xs font-bold px-3 py-1 rounded-bl-lg">
-            POPULAR
-          </div>
-          <h3 className="text-xl font-bold mb-2">Pro</h3>
-          <div className="flex items-baseline gap-1 mb-6">
-            <span className="text-4xl font-bold">$19</span>
-            <span className="text-gray-400 text-sm">/mo</span>
-          </div>
-          <ul className="space-y-3 mb-8">
-            {['Unlimited Hooks', '50 AI Assets/mo', 'Priority Support', 'Advanced Analytics'].map((feat, i) => (
-              <li key={i} className="flex items-center gap-2 text-sm text-gray-300">
-                <Check size={16} className="text-orange-500" />
-                {feat}
-              </li>
-            ))}
-          </ul>
-          <button 
-            onClick={() => handleUpgrade('PRO')}
-            disabled={!!loading}
-            className="w-full py-3 rounded-lg font-medium bg-orange-500 text-black hover:bg-orange-400 transition-colors flex items-center justify-center gap-2"
+        {planList.map((plan) => (
+          <div 
+            key={plan.id}
+            className={cn(
+              "p-8 rounded-2xl border relative overflow-hidden flex flex-col",
+              plan.id === 'PRO' ? "bg-zinc-900 border-orange-500" : "bg-black border-white/10"
+            )}
           >
-            {loading === 'PRO' ? <Loader2 className="animate-spin" /> : 'Upgrade to Pro'}
-          </button>
-        </div>
+            {plan.id === 'PRO' && (
+              <div className="absolute top-0 right-0 bg-orange-500 text-black text-xs font-bold px-3 py-1 rounded-bl-lg">
+                POPULAR
+              </div>
+            )}
+            
+            <h3 className="text-xl font-bold mb-2">{plan.name}</h3>
+            <div className="flex items-baseline gap-1 mb-6">
+              <span className="text-4xl font-bold">${plan.price}</span>
+              <span className="text-gray-400 text-sm">/mo</span>
+            </div>
+            
+            <ul className="space-y-3 mb-8 flex-1">
+              {plan.features.map((feat, i) => (
+                <li key={i} className="flex items-center gap-2 text-sm text-gray-300">
+                  <Check size={16} className="text-orange-500 shrink-0" />
+                  {feat}
+                </li>
+              ))}
+            </ul>
 
-        {/* Business Plan */}
-        <div className="p-8 rounded-2xl bg-black border border-white/10">
-          <h3 className="text-xl font-bold mb-2">Business</h3>
-          <div className="flex items-baseline gap-1 mb-6">
-            <span className="text-4xl font-bold">$49</span>
-            <span className="text-gray-400 text-sm">/mo</span>
+            {plan.id === 'FREE' ? (
+              <button className="w-full py-3 rounded-lg font-medium bg-white/10 text-white cursor-default">
+                Current Plan
+              </button>
+            ) : (
+              <button 
+                onClick={() => handleUpgrade(plan.id)}
+                disabled={!!loading}
+                className={cn(
+                  "w-full py-3 rounded-lg font-medium transition-colors flex items-center justify-center gap-2",
+                  plan.id === 'PRO' 
+                    ? "bg-orange-500 text-black hover:bg-orange-400" 
+                    : "bg-white text-black hover:bg-gray-200"
+                )}
+              >
+                {loading === plan.id ? <Loader2 className="animate-spin" /> : `Upgrade to ${plan.name}`}
+              </button>
+            )}
           </div>
-          <ul className="space-y-3 mb-8">
-            {['5 Brand Profiles', 'Unlimited Everything', 'Team Access', 'API Access'].map((feat, i) => (
-              <li key={i} className="flex items-center gap-2 text-sm text-gray-300">
-                <Check size={16} className="text-orange-500" />
-                {feat}
-              </li>
-            ))}
-          </ul>
-          <button 
-            onClick={() => handleUpgrade('BUSINESS')}
-            disabled={!!loading}
-            className="w-full py-3 rounded-lg font-medium bg-white text-black hover:bg-gray-200 transition-colors flex items-center justify-center gap-2"
-          >
-            {loading === 'BUSINESS' ? <Loader2 className="animate-spin" /> : 'Contact Sales'}
-          </button>
-        </div>
+        ))}
       </div>
     </div>
   );

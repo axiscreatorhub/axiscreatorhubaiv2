@@ -1,76 +1,95 @@
-# Production Deployment Guide (Google Cloud Run)
+# Production Deployment Guide
 
-## 1. Prerequisites
+This guide covers deploying the AXIS Creator AI Hub to Google Cloud Run (recommended for full-stack) and syncing with GitHub.
+
+## 1. Sync with GitHub
+
+Since I cannot push code directly, you need to initialize a repository and push this code:
+
+1.  **Initialize Git**:
+    ```bash
+    git init
+    git add .
+    git commit -m "Initial commit"
+    ```
+
+2.  **Create Repository**:
+    - Go to [GitHub](https://github.com/new) and create a new repository named `axiscreatorhubaiv2`.
+
+3.  **Push Code**:
+    ```bash
+    git remote add origin https://github.com/axiscreatorhub/axiscreatorhubaiv2.git
+    git branch -M main
+    git push -u origin main
+    ```
+
+## 2. Deploy to Google Cloud Run (Recommended)
+
+This application uses a custom Express server for the backend and Vite for the frontend. **Google Cloud Run** is the best host because it supports Docker containers natively.
+
+### Prerequisites
 - Google Cloud Project created
-- `gcloud` CLI installed and authenticated
-- Postgres Database (e.g. Neon, Supabase, or Cloud SQL) provisioned
+- `gcloud` CLI installed
+- Postgres Database (e.g. Neon, Supabase, or Cloud SQL)
 
-## 2. Environment Variables Setup
-Create a `.env.prod` file (do not commit this!) with your production secrets:
+### Deployment Steps
 
-```env
-NODE_ENV=production
-APP_URL=https://your-service-url.a.run.app
-DATABASE_URL="postgresql://user:pass@host:port/db?sslmode=require"
-CLERK_PUBLISHABLE_KEY=pk_live_...
-CLERK_SECRET_KEY=sk_live_...
-GEMINI_API_KEY=AIza...
-PAYSTACK_SECRET_KEY=sk_live_...
-PAYSTACK_PUBLIC_KEY=pk_live_...
-```
+1.  **Build & Deploy**:
+    Run this from your terminal:
+    ```bash
+    gcloud run deploy axis-creator-hub \
+      --source . \
+      --platform managed \
+      --region europe-west1 \
+      --allow-unauthenticated \
+      --set-env-vars "NODE_ENV=production" \
+      --set-env-vars "APP_URL=https://axiscreatorhub.com" \
+      --set-env-vars "DATABASE_URL=postgresql://user:pass@host:port/db?sslmode=require" \
+      --set-env-vars "CLERK_PUBLISHABLE_KEY=pk_live_..." \
+      --set-env-vars "CLERK_SECRET_KEY=sk_live_..." \
+      --set-env-vars "GEMINI_API_KEY=AIza..." \
+      --set-env-vars "PAYSTACK_SECRET_KEY=sk_live_..." \
+      --set-env-vars "PAYSTACK_PUBLIC_KEY=pk_live_..."
+    ```
 
-## 3. Build & Deploy Command
-Run this command from the root of your project to build and deploy directly to Cloud Run:
+2.  **Map Custom Domain**:
+    - Go to [Cloud Run Console](https://console.cloud.google.com/run).
+    - Select `axis-creator-hub`.
+    - Click **Manage Custom Domains**.
+    - Add `axiscreatorhub.com`.
+    - Follow the instructions to update your DNS records (A and AAAA records) at your domain registrar.
 
-```bash
-gcloud run deploy axis-creator-hub \
-  --source . \
-  --platform managed \
-  --region us-central1 \
-  --allow-unauthenticated \
-  --set-env-vars "NODE_ENV=production" \
-  --set-env-vars "DATABASE_URL=postgresql://user:pass@host:port/db?sslmode=require" \
-  --set-env-vars "CLERK_PUBLISHABLE_KEY=pk_live_..." \
-  --set-env-vars "CLERK_SECRET_KEY=sk_live_..." \
-  --set-env-vars "GEMINI_API_KEY=AIza..." \
-  --set-env-vars "PAYSTACK_SECRET_KEY=sk_live_..." \
-  --set-env-vars "PAYSTACK_PUBLIC_KEY=pk_live_..."
-```
+## 3. Vercel Deployment (Frontend Only)
 
-*Note: For better security, use Google Secret Manager instead of passing secrets in the command line.*
+**Note:** This is a full-stack application with a custom Node.js backend. Vercel is optimized for Next.js or static sites. Deploying this specific architecture to Vercel requires splitting the frontend and backend or complex configuration.
+
+**Recommendation:** Use Google Cloud Run (Step 2) for the full application.
+
+If you strictly want to use Vercel:
+1.  **Connect GitHub**: Import the `axiscreatorhubaiv2` repo in Vercel.
+2.  **Configure Project**:
+    - Framework Preset: `Vite`
+    - Build Command: `npm run build`
+    - Output Directory: `dist`
+3.  **Limitations**: The backend API (`/api/*`) defined in `server.ts` **will not work** on Vercel without refactoring to Vercel Functions.
 
 ## 4. Post-Deployment Configuration
 
-### A. Update APP_URL
-After deployment, get the Service URL (e.g., `https://axis-creator-hub-xyz.a.run.app`).
-Update the `APP_URL` environment variable in Cloud Run to this URL.
+### A. Update Environment Variables
+Ensure `APP_URL` is set to `https://axiscreatorhub.com` in your deployment environment variables.
 
 ### B. Configure Webhooks
-1. **Paystack**: Go to Settings > API Keys & Webhooks.
-   - Set Webhook URL to: `https://YOUR_APP_URL/api/webhooks/paystack`
-2. **Clerk**: Go to Webhooks.
-   - Add Endpoint: `https://YOUR_APP_URL/api/webhooks/clerk` (if implemented later)
-   - Or configure Redirect URLs in Clerk > API Keys > Paths:
-     - Sign-in: `https://YOUR_APP_URL/sign-in`
-     - Sign-up: `https://YOUR_APP_URL/sign-up`
+1. **Paystack**: Settings > API Keys & Webhooks.
+   - URL: `https://axiscreatorhub.com/api/webhooks/paystack`
+2. **Clerk**: Webhooks.
+   - Endpoint: `https://axiscreatorhub.com/api/webhooks/clerk`
 
-## 5. Troubleshooting Common Issues
+## 5. Troubleshooting
 
 ### "Container failed to start"
-- **Check Logs**: Go to Cloud Run > Logs.
-- **Port Binding**: Ensure `PORT` env var is set to `3000` (Cloud Run sets this automatically usually, but our Dockerfile defaults it).
-- **Database Connection**: Verify `DATABASE_URL` is reachable from Cloud Run. If using Cloud SQL, you need a VPC connector or public IP. Neon/Supabase usually work over public internet.
+- **Check Logs**: Cloud Run > Logs.
+- **Port**: Ensure the container listens on port 3000 (default in Dockerfile).
+- **Database**: Ensure `DATABASE_URL` is correct and accessible.
 
 ### "Prisma Client not initialized"
-- Ensure `npx prisma generate` ran during the build (it is in the Dockerfile).
-- Ensure `npx prisma migrate deploy` runs on startup (it is in the CMD).
-
-### "Vite manifest not found"
-- Ensure `npm run build` ran successfully in the builder stage.
-- Check if `dist/` folder exists in the final image.
-
-## 6. Health Check
-Cloud Run automatically checks if the container is listening on the port.
-You can manually verify with:
-`curl https://YOUR_APP_URL/api/health`
-Should return `{"status":"ok"}`.
+- The Dockerfile includes `npx prisma generate`, so this should work automatically.

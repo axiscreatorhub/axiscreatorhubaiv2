@@ -12,11 +12,19 @@ import {
   Zap,
   Loader2
 } from 'lucide-react';
+import UsageIndicator from '../components/ui/UsageIndicator';
+import TierBadge from '../components/ui/TierBadge';
+import UpgradeModal from '../components/ui/UpgradeModal';
+import { apiClient, useAppAuth } from '../lib/api';
 
 export default function Dashboard() {
   const navigate = useNavigate();
+  const { getToken } = useAppAuth();
   const [user, setUser] = useState<any>(null);
+  const [usageData, setUsageData] = useState<any>(null);
   const [activeTab, setActiveTab] = useState('overview');
+  const [showUpgradeModal, setShowUpgradeModal] = useState(false);
+  const [upgradeFeature, setUpgradeFeature] = useState('');
   
   // Hook Generator State
   const [topic, setTopic] = useState('');
@@ -26,16 +34,25 @@ export default function Dashboard() {
   const [generatedHooks, setGeneratedHooks] = useState<string[]>([]);
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
     const userData = localStorage.getItem('user');
     
-    if (!token || !userData) {
+    if (!userData) {
       navigate('/auth?mode=login');
       return;
     }
     
     setUser(JSON.parse(userData));
+    fetchUsage();
   }, [navigate]);
+
+  const fetchUsage = async () => {
+    try {
+      const data = await apiClient('/usage', {}, getToken);
+      setUsageData(data);
+    } catch (error) {
+      console.error('Failed to fetch usage:', error);
+    }
+  };
 
   const handleLogout = () => {
     localStorage.removeItem('token');
@@ -46,23 +63,21 @@ export default function Dashboard() {
   const handleGenerateHooks = async () => {
     setGenerating(true);
     try {
-      const token = localStorage.getItem('token');
-      const res = await fetch('/api/ai/generate/hooks', {
+      const data = await apiClient('/hooks/generate', {
         method: 'POST',
-        headers: { 
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
         body: JSON.stringify({ topic, tone, format }),
-      });
-      
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error);
+      }, getToken);
       
       setGeneratedHooks(data.hooks);
-    } catch (error) {
+      fetchUsage(); // Refresh usage after generation
+    } catch (error: any) {
       console.error('Failed to generate hooks:', error);
-      alert('Failed to generate hooks. Please try again.');
+      if (error.message?.includes('Limit reached')) {
+        setUpgradeFeature('Unlimited Hooks');
+        setShowUpgradeModal(true);
+      } else {
+        alert('Failed to generate hooks. Please try again.');
+      }
     } finally {
       setGenerating(false);
     }
@@ -72,6 +87,12 @@ export default function Dashboard() {
 
   return (
     <div className="min-h-screen bg-black text-white flex font-sans">
+      <UpgradeModal 
+        isOpen={showUpgradeModal} 
+        onClose={() => setShowUpgradeModal(false)} 
+        feature={upgradeFeature} 
+      />
+
       {/* Sidebar */}
       <aside className="w-64 border-r border-white/10 bg-zinc-900/50 hidden md:flex flex-col">
         <div className="p-6 border-b border-white/10">
@@ -107,13 +128,34 @@ export default function Dashboard() {
         </nav>
 
         <div className="p-4 border-t border-white/10">
+          {usageData && (
+            <div className="mb-6 space-y-4 px-2">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-xs font-bold text-gray-400 uppercase tracking-wider">Usage</span>
+                <TierBadge planId={usageData.plan.id} />
+              </div>
+              <UsageIndicator 
+                label="Hooks" 
+                current={usageData.usage.hooks} 
+                limit={usageData.limits.hooks} 
+                color="bg-yellow-500"
+              />
+              <UsageIndicator 
+                label="Assets" 
+                current={usageData.usage.assets} 
+                limit={usageData.limits.assets} 
+                color="bg-purple-500"
+              />
+            </div>
+          )}
+
           <div className="flex items-center gap-3 px-4 py-3 mb-2">
             <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-orange-500 to-red-500 flex items-center justify-center text-xs font-bold">
               {user.email[0].toUpperCase()}
             </div>
             <div className="flex-1 min-w-0">
               <p className="text-sm font-medium truncate">{user.email}</p>
-              <p className="text-xs text-gray-500 truncate capitalize">{user.tier} Plan</p>
+              <p className="text-xs text-gray-500 truncate capitalize">{usageData?.plan?.name || 'Free'} Plan</p>
             </div>
           </div>
           <button
@@ -141,18 +183,25 @@ export default function Dashboard() {
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div className="p-6 rounded-2xl bg-zinc-900 border border-white/10">
                   <h3 className="text-gray-400 text-sm font-medium mb-2">Total Hooks Generated</h3>
-                  <p className="text-3xl font-bold">0</p>
+                  <p className="text-3xl font-bold">{usageData?.usage?.hooks || 0}</p>
                 </div>
                 <div className="p-6 rounded-2xl bg-zinc-900 border border-white/10">
                   <h3 className="text-gray-400 text-sm font-medium mb-2">Assets Created</h3>
-                  <p className="text-3xl font-bold">0</p>
+                  <p className="text-3xl font-bold">{usageData?.usage?.assets || 0}</p>
                 </div>
                 <div className="p-6 rounded-2xl bg-zinc-900 border border-white/10">
                   <h3 className="text-gray-400 text-sm font-medium mb-2">Plan Usage</h3>
-                  <div className="w-full bg-white/10 h-2 rounded-full mt-2 mb-1">
-                    <div className="bg-orange-500 h-2 rounded-full w-[10%]"></div>
-                  </div>
-                  <p className="text-xs text-gray-500">5/50 credits used</p>
+                  {usageData && (
+                    <>
+                      <div className="w-full bg-white/10 h-2 rounded-full mt-2 mb-1">
+                        <div 
+                          className="bg-orange-500 h-2 rounded-full transition-all duration-500" 
+                          style={{ width: `${Math.min(100, (usageData.usage.hooks / usageData.limits.hooks) * 100)}%` }}
+                        ></div>
+                      </div>
+                      <p className="text-xs text-gray-500">{usageData.usage.hooks}/{usageData.limits.hooks} credits used</p>
+                    </>
+                  )}
                 </div>
               </div>
 

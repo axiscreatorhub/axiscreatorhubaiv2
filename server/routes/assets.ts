@@ -3,6 +3,7 @@ import { z } from 'zod';
 import { requireAuth } from '../middleware/auth.ts';
 import prisma from '../db/prisma.ts';
 import { imageService } from '../services/ai/image.ts';
+import { usageService } from '../services/usage.ts';
 
 const router = express.Router();
 
@@ -16,6 +17,9 @@ router.post('/generate', requireAuth, async (req, res) => {
   try {
     const { type, prompt, style } = generateSchema.parse(req.body);
     const userId = req.user.id;
+
+    // Check usage limits
+    await usageService.checkLimit(userId, 'ASSET_GEN');
 
     // Create Job first to track it
     const job = await prisma.assetJob.create({
@@ -40,6 +44,9 @@ router.post('/generate', requireAuth, async (req, res) => {
           outputUrls: JSON.stringify([imageUrl]),
         }
       });
+
+      // Track usage
+      await usageService.trackUsage(userId, 'ASSET_GEN', 1);
       
       res.json({ jobId: job.id, status: 'COMPLETED', outputUrls: [imageUrl] });
     } catch (genError) {
@@ -53,6 +60,9 @@ router.post('/generate', requireAuth, async (req, res) => {
     }
 
   } catch (error) {
+    if (error instanceof Error && error.message.includes('Limit reached')) {
+      return res.status(403).json({ error: error.message, code: 'LIMIT_REACHED' });
+    }
     console.error('Generate asset error:', error);
     res.status(500).json({ error: 'Failed to generate asset' });
   }

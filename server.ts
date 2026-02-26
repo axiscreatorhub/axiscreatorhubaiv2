@@ -13,6 +13,7 @@ import assetsRoutes from './server/routes/assets.ts';
 import billingRoutes from './server/routes/billing.ts';
 import webhookRoutes from './server/routes/webhooks.ts';
 import aiRoutes from './server/routes/ai.ts';
+import usageRoutes from './server/routes/usage.ts';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -42,6 +43,7 @@ async function startServer() {
   app.use('/api/billing', billingRoutes);
   app.use('/api/webhooks', webhookRoutes);
   app.use('/api/ai', aiRoutes);
+  app.use('/api/usage', usageRoutes);
 
   app.get('/api/health', (req, res) => {
     res.json({ status: 'ok', timestamp: new Date().toISOString() });
