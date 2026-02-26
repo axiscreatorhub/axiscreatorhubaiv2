@@ -1,23 +1,9 @@
-import { motion } from 'motion/react';
-import { Link } from 'react-router-dom';
-import { 
-  PenTool, 
-  Image as ImageIcon, 
-  Video, 
-  Mic, 
-  Sparkles, 
-  ArrowRight, 
-  Clock,
-  TrendingUp,
-  Zap
-} from 'lucide-react';
-
 export default function HomePage() {
   const quickActions = [
-    { label: 'Viral Hook', icon: PenTool, color: 'from-orange-400 to-pink-500', href: '/app/create' },
-    { label: 'Thumbnail', icon: ImageIcon, color: 'from-blue-400 to-cyan-500', href: '/app/create' },
-    { label: 'Caption', icon: Sparkles, color: 'from-purple-400 to-indigo-500', href: '/app/edit' },
-    { label: 'Idea Gen', icon: Zap, color: 'from-yellow-400 to-orange-500', href: '/app/assist' },
+    { label: 'Viral Hook', icon: PenTool, color: 'from-[#FCAF45] to-[#E1306C]', href: '/app/create' },
+    { label: 'Thumbnail', icon: ImageIcon, color: 'from-[#833AB4] to-[#C13584]', href: '/app/create' },
+    { label: 'Caption', icon: Sparkles, color: 'from-[#405DE6] to-[#5851DB]', href: '/app/edit' },
+    { label: 'Idea Gen', icon: Zap, color: 'from-[#FFDC80] to-[#FCAF45]', href: '/app/assist' },
   ];
 
   const recentProjects = [
@@ -33,26 +19,51 @@ export default function HomePage() {
   ];
 
   return (
-    <div className="max-w-5xl mx-auto pb-24 md:pb-0">
+    <div className="max-w-6xl mx-auto pb-24 md:pb-0">
       {/* Hero Section */}
       <motion.div 
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="mb-10 text-center md:text-left"
+        className="mb-12 text-center md:text-left relative"
       >
-        <h1 className="text-4xl md:text-5xl font-bold mb-3">
-          <span className="bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent">
-            Ready to create,
-          </span>{' '}
-          <span className="bg-gradient-to-r from-orange-400 to-pink-500 bg-clip-text text-transparent">
-            Creator?
+        <div className="absolute -top-20 -left-20 w-64 h-64 bg-[#E1306C]/20 rounded-full blur-[100px] animate-blob" />
+        
+        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 mb-6 backdrop-blur-md">
+          <span className="w-2 h-2 rounded-full bg-[#E1306C] animate-pulse"></span>
+          <span className="text-xs font-medium tracking-wide text-gray-300 uppercase">The Viral Content OS</span>
+        </div>
+
+        <h1 className="text-5xl md:text-7xl font-bold mb-6 tracking-tight relative z-10 leading-tight">
+          <span className="text-white">
+            SCALE YOUR
+          </span>
+          <br />
+          <span className="text-gradient-brand">
+            CREATOR CAREER
           </span>
         </h1>
-        <p className="text-gray-400 text-lg">Your AI studio is ready. What are we making today?</p>
+        <p className="text-gray-400 text-lg md:text-xl max-w-2xl relative z-10 mb-8 leading-relaxed">
+          From side hustle to full-time influencer. AXIS is the ultimate AI-powered Creator OS designed to help you dominate Instagram, TikTok, and YouTube with ease and excellence.
+        </p>
+
+        <div className="flex flex-col sm:flex-row gap-4 relative z-10">
+          <Link 
+            to="/app/create"
+            className="btn-viral px-8 py-4 rounded-xl text-lg flex items-center justify-center gap-2"
+          >
+            Start Creating Free <ArrowRight size={20} />
+          </Link>
+          <Link 
+            to="/app/monetize"
+            className="px-8 py-4 rounded-xl text-lg font-medium bg-white/5 border border-white/10 hover:bg-white/10 transition-colors flex items-center justify-center"
+          >
+            View Pricing
+          </Link>
+        </div>
       </motion.div>
 
       {/* Quick Actions Grid */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-12">
         {quickActions.map((action, i) => (
           <motion.div
             key={action.label}
@@ -62,48 +73,54 @@ export default function HomePage() {
           >
             <Link 
               to={action.href}
-              className="group relative block aspect-square rounded-3xl overflow-hidden bg-zinc-900 border border-white/10 hover:border-white/20 transition-all"
+              className="group relative block aspect-square rounded-[2rem] overflow-hidden glass-card hover:border-white/30 transition-all duration-500"
             >
-              <div className={`absolute inset-0 bg-gradient-to-br ${action.color} opacity-10 group-hover:opacity-20 transition-opacity`} />
-              <div className="absolute inset-0 flex flex-col items-center justify-center p-4 text-center">
-                <div className={`w-12 h-12 rounded-2xl bg-gradient-to-br ${action.color} flex items-center justify-center mb-3 shadow-lg group-hover:scale-110 transition-transform`}>
-                  <action.icon className="text-white" size={24} />
+              <div className={`absolute inset-0 bg-gradient-to-br ${action.color} opacity-0 group-hover:opacity-10 transition-opacity duration-500`} />
+              
+              <div className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center z-10">
+                <div className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${action.color} flex items-center justify-center mb-4 shadow-lg shadow-black/50 group-hover:scale-110 transition-transform duration-500`}>
+                  <action.icon className="text-white" size={32} />
                 </div>
-                <span className="font-bold text-white">{action.label}</span>
+                <span className="font-bold text-white text-lg">{action.label}</span>
               </div>
+              
+              {/* Shine Effect */}
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:animate-shimmer" />
             </Link>
           </motion.div>
         ))}
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Recent Projects */}
-        <div className="md:col-span-2 space-y-6">
+        <div className="lg:col-span-2 space-y-6">
           <div className="flex items-center justify-between">
-            <h2 className="text-xl font-bold flex items-center gap-2">
-              <Clock size={20} className="text-gray-400" />
+            <h2 className="text-2xl font-bold flex items-center gap-3">
+              <Clock size={24} className="text-[#FCAF45]" />
               Recent Projects
             </h2>
-            <Link to="/app/create" className="text-sm text-orange-500 hover:text-orange-400">View All</Link>
+            <Link to="/app/create" className="text-sm text-gray-400 hover:text-white transition-colors">View All</Link>
           </div>
           
-          <div className="space-y-3">
+          <div className="space-y-4">
             {recentProjects.map((project, i) => (
               <motion.div
                 key={i}
                 initial={{ opacity: 0, x: -10 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.2 + (i * 0.1) }}
-                className="flex items-center gap-4 p-4 bg-zinc-900/50 border border-white/5 rounded-2xl hover:bg-zinc-900 transition-colors cursor-pointer group"
+                className="flex items-center gap-6 p-5 glass-card rounded-2xl hover:bg-white/10 transition-colors cursor-pointer group"
               >
-                <div className="w-10 h-10 rounded-xl bg-zinc-800 flex items-center justify-center text-gray-400 group-hover:text-white transition-colors">
-                  <project.icon size={20} />
+                <div className="w-12 h-12 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-gray-400 group-hover:text-white group-hover:border-[#E1306C]/50 transition-all">
+                  <project.icon size={24} />
                 </div>
                 <div className="flex-1">
-                  <h3 className="font-medium text-white">{project.title}</h3>
-                  <p className="text-xs text-gray-500">{project.type} • {project.date}</p>
+                  <h3 className="font-bold text-lg text-white mb-1">{project.title}</h3>
+                  <p className="text-sm text-gray-500">{project.type} • {project.date}</p>
                 </div>
-                <ArrowRight size={16} className="text-gray-600 group-hover:text-white transition-colors" />
+                <div className="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center group-hover:bg-white group-hover:text-black transition-all">
+                  <ArrowRight size={18} />
+                </div>
               </motion.div>
             ))}
           </div>
@@ -112,47 +129,51 @@ export default function HomePage() {
         {/* Trending Templates */}
         <div className="space-y-6">
           <div className="flex items-center justify-between">
-            <h2 className="text-xl font-bold flex items-center gap-2">
-              <TrendingUp size={20} className="text-gray-400" />
+            <h2 className="text-2xl font-bold flex items-center gap-3">
+              <TrendingUp size={24} className="text-[#E1306C]" />
               Trending
             </h2>
           </div>
 
-          <div className="space-y-3">
+          <div className="space-y-4">
             {trendingTemplates.map((template, i) => (
               <motion.div
                 key={i}
                 initial={{ opacity: 0, x: 10 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.3 + (i * 0.1) }}
-                className="p-4 bg-gradient-to-br from-zinc-900 to-zinc-900/50 border border-white/5 rounded-2xl relative overflow-hidden group cursor-pointer"
+                className="p-5 glass-card rounded-2xl relative overflow-hidden group cursor-pointer hover:border-[#E1306C]/30 transition-all"
               >
-                <div className="absolute top-0 right-0 p-3 opacity-10 group-hover:opacity-20 transition-opacity">
-                  <Sparkles size={40} />
+                <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity text-[#E1306C]">
+                  <Sparkles size={48} />
                 </div>
-                <h3 className="font-bold text-white mb-1">{template.title}</h3>
-                <div className="flex items-center gap-2 text-xs text-gray-400">
-                  <span className="px-2 py-0.5 rounded-full bg-white/10">{template.category}</span>
-                  <span>{template.plays} uses</span>
+                <h3 className="font-bold text-white text-lg mb-2">{template.title}</h3>
+                <div className="flex items-center gap-3 text-xs text-gray-400">
+                  <span className="px-3 py-1 rounded-full bg-white/10 border border-white/5">{template.category}</span>
+                  <span className="flex items-center gap-1"><Play size={10} fill="currentColor"/> {template.plays}</span>
                 </div>
               </motion.div>
             ))}
           </div>
 
           {/* AI Assistant Teaser */}
-          <div className="p-5 bg-gradient-to-br from-purple-900/20 to-indigo-900/20 border border-purple-500/20 rounded-2xl mt-6">
-            <div className="flex items-center gap-3 mb-3">
-              <div className="w-8 h-8 rounded-full bg-purple-500 flex items-center justify-center">
-                <Sparkles size={16} className="text-white" />
+          <div className="p-6 rounded-3xl bg-gradient-to-br from-[#833AB4]/40 to-[#405DE6]/40 border border-[#833AB4]/30 backdrop-blur-md relative overflow-hidden group">
+            <div className="absolute inset-0 bg-[#833AB4]/10 opacity-0 group-hover:opacity-100 transition-opacity" />
+            
+            <div className="flex items-center gap-4 mb-4 relative z-10">
+              <div className="w-10 h-10 rounded-full bg-[#833AB4] flex items-center justify-center shadow-lg shadow-[#833AB4]/30">
+                <Sparkles size={20} className="text-white" />
               </div>
-              <span className="font-bold text-purple-200">AI Assistant</span>
+              <span className="font-bold text-white text-lg">AI Assistant</span>
             </div>
-            <p className="text-sm text-purple-200/70 mb-3">
+            
+            <p className="text-white/80 mb-6 relative z-10 leading-relaxed">
               "I can help you plan your content strategy for next week. Want to try?"
             </p>
+            
             <Link 
               to="/app/assist"
-              className="block w-full py-2 bg-purple-500/20 hover:bg-purple-500/30 text-purple-200 text-center rounded-lg text-sm font-medium transition-colors"
+              className="block w-full py-3 bg-white/10 hover:bg-white/20 border border-white/10 text-white text-center rounded-xl font-medium transition-all relative z-10"
             >
               Chat Now
             </Link>

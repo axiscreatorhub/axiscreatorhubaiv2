@@ -16,20 +16,29 @@ export default function UsageIndicator({ label, current, limit, color = 'bg-oran
   const isAtLimit = percentage >= 100;
 
   return (
-    <div className={cn("space-y-1", className)}>
-      <div className="flex justify-between text-xs font-medium text-gray-400">
-        <span>{label}</span>
-        <span className={cn(isAtLimit ? "text-red-500" : isNearLimit ? "text-yellow-500" : "text-gray-400")}>
+    <div className={cn("space-y-2", className)}>
+      <div className="flex justify-between items-center text-xs font-medium">
+        <span className="text-gray-400 uppercase tracking-wider">{label}</span>
+        <span className={cn(
+          "px-2 py-0.5 rounded-full bg-white/5 border border-white/5",
+          isAtLimit ? "text-red-400 border-red-500/30" : isNearLimit ? "text-yellow-400 border-yellow-500/30" : "text-gray-400"
+        )}>
           {current} / {limit}
         </span>
       </div>
-      <div className="h-1.5 w-full bg-white/10 rounded-full overflow-hidden">
+      <div className="h-2 w-full bg-white/5 rounded-full overflow-hidden border border-white/5 relative">
         <motion.div 
           initial={{ width: 0 }}
           animate={{ width: `${percentage}%` }}
-          transition={{ duration: 0.5, ease: "easeOut" }}
-          className={cn("h-full rounded-full", isAtLimit ? "bg-red-500" : color)}
-        />
+          transition={{ duration: 0.8, ease: "easeOut" }}
+          className={cn(
+            "h-full rounded-full relative overflow-hidden",
+            isAtLimit ? "bg-red-500" : color
+          )}
+        >
+          {/* Shimmer Effect */}
+          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full animate-shimmer" />
+        </motion.div>
       </div>
     </div>
   );
