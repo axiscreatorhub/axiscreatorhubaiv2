@@ -4,6 +4,7 @@ export interface BrandProfileContext {
   tone: string;
   audience: string;
   platforms: string[];
+  referenceContent?: string;
 }
 
 export const PROMPT_TEMPLATES = {

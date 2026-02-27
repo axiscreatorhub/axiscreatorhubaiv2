@@ -11,11 +11,12 @@ const generateSchema = z.object({
   type: z.enum(['THUMBNAIL', 'AVATAR', 'COVER']),
   prompt: z.string(),
   style: z.string().optional(),
+  size: z.enum(['512px', '1K', '2K', '4K']).optional(),
 });
 
 router.post('/generate', requireAuth, async (req, res) => {
   try {
-    const { type, prompt, style } = generateSchema.parse(req.body);
+    const { type, prompt, style, size } = generateSchema.parse(req.body);
     const userId = req.user.id;
 
     // Check usage limits
@@ -34,7 +35,7 @@ router.post('/generate', requireAuth, async (req, res) => {
 
     // Generate image using modular service
     try {
-      const imageUrl = await imageService.generate(prompt, style);
+      const imageUrl = await imageService.generate(prompt, style, size as any);
       
       // Update job with success
       await prisma.assetJob.update({

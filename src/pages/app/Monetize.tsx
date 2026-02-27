@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { 
   DollarSign, 
@@ -45,228 +45,38 @@ const PLATFORM_ICONS: Record<string, any> = {
   TikTok: (props: any) => <Smartphone {...props} />, // Using Smartphone as placeholder for TikTok
 };
 
+import { useNavigate } from 'react-router-dom';
+import { apiClient, useAppAuth } from '../../lib/api';
+
 export default function MonetizePage() {
-  const [setupComplete, setSetupComplete] = useState(false);
-  const [step, setStep] = useState(1);
+  const { getToken } = useAppAuth();
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<'overview' | 'mediakit' | 'links'>('overview');
   
   // Tutorial Hook
   const { showTutorial, completeTutorial, resetTutorial } = useTutorial('monetize');
 
-  const [profile, setProfile] = useState<CreatorProfile>({
-    niche: '',
-    bio: '',
-    audience: { age: '18-34', gender: 'All', location: 'Global' },
-    platforms: [],
-    offers: []
+  const [stats, setStats] = useState({
+    revenue: 1240,
+    clicks: 8432,
+    deals: 3,
+    mediaKitViews: 0
   });
 
-  const addPlatform = (platformId: string) => {
-    if (profile.platforms.find(p => p.id === platformId)) return;
-    setProfile({
-      ...profile,
-      platforms: [...profile.platforms, { id: platformId, handle: '', followers: '' }]
-    });
-  };
+  useEffect(() => {
+    fetchStats();
+  }, []);
 
-  const updatePlatform = (index: number, field: 'handle' | 'followers', value: string) => {
-    const newPlatforms = [...profile.platforms];
-    newPlatforms[index] = { ...newPlatforms[index], [field]: value };
-    setProfile({ ...profile, platforms: newPlatforms });
-  };
-
-  const handleNext = () => {
-    if (step < 4) {
-      setStep(step + 1);
-    } else {
-      setSetupComplete(true);
+  const fetchStats = async () => {
+    try {
+      const data = await apiClient('/mediakit', {}, getToken);
+      if (data?.mediaKit) {
+        setStats(prev => ({ ...prev, mediaKitViews: data.mediaKit.viewCount }));
+      }
+    } catch (error) {
+      console.error(error);
     }
   };
-
-  // --- Render: Wizard ---
-  if (!setupComplete) {
-    return (
-      <div className="max-w-2xl mx-auto py-12 relative">
-        {showTutorial && (
-          <TutorialOverlay 
-            moduleName="Monetization Hub" 
-            steps={TUTORIALS.monetize} 
-            onComplete={completeTutorial} 
-          />
-        )}
-
-        <div className="text-center mb-12 relative">
-          <button 
-            onClick={resetTutorial}
-            className="absolute top-0 right-0 p-2 text-gray-500 hover:text-white transition-colors"
-            title="Replay Tutorial"
-          >
-            <HelpCircle size={20} />
-          </button>
-          <h1 className="text-3xl font-bold mb-2 bg-gradient-to-r from-[#3B82F6] via-[#8B5CF6] to-[#EC4899] bg-clip-text text-transparent">
-            Monetization Setup
-          </h1>
-          <p className="text-gray-400">Let's build your creator persona and media kit.</p>
-        </div>
-        
-        {/* PROGRESS BAR */}
-        <div className="flex gap-2 mb-8">
-          {[1, 2, 3, 4].map(i => (
-            <div key={i} className={cn("h-1 flex-1 rounded-full transition-colors", i <= step ? "bg-[#8B5CF6]" : "bg-zinc-800")} />
-          ))}
-        </div>
-
-        <div className="bg-[#0A0E1A]/60 backdrop-blur-xl border border-white/10 rounded-3xl p-8 min-h-[400px] flex flex-col shadow-2xl">
-          <AnimatePresence mode="wait">
-            {step === 1 && (
-              <motion.div key="step1" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="flex-1">
-                <h2 className="text-xl font-bold mb-6 flex items-center gap-2">
-                  <Globe className="text-[#3B82F6]" /> Niche & Bio
-                </h2>
-                <div className="space-y-4">
-                  <div>
-                    <label className="block text-sm text-gray-400 mb-2">Your Niche</label>
-                    <input 
-                      value={profile.niche}
-                      onChange={e => setProfile({...profile, niche: e.target.value})}
-                      placeholder="e.g. Tech Reviews, Fitness, Lifestyle"
-                      className="w-full bg-black/40 border border-white/10 rounded-xl p-3 text-white focus:border-[#8B5CF6] outline-none transition-all"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm text-gray-400 mb-2">Short Bio</label>
-                    <textarea 
-                      value={profile.bio}
-                      onChange={e => setProfile({...profile, bio: e.target.value})}
-                      placeholder="I help people..."
-                      className="w-full h-32 bg-black/40 border border-white/10 rounded-xl p-3 text-white focus:border-[#8B5CF6] outline-none resize-none transition-all"
-                    />
-                  </div>
-                </div>
-              </motion.div>
-            )}
-
-            {step === 2 && (
-              <motion.div key="step2" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="flex-1">
-                <h2 className="text-xl font-bold mb-6 flex items-center gap-2">
-                  <Users className="text-[#8B5CF6]" /> Audience Demographics
-                </h2>
-                <div className="space-y-4">
-                  <div>
-                    <label className="block text-sm text-gray-400 mb-2">Primary Age Group</label>
-                    <select 
-                      value={profile.audience.age}
-                      onChange={e => setProfile({...profile, audience: {...profile.audience, age: e.target.value}})}
-                      className="w-full bg-black/40 border border-white/10 rounded-xl p-3 text-white outline-none focus:border-[#8B5CF6] transition-all"
-                    >
-                      <option>13-17</option>
-                      <option>18-24</option>
-                      <option>25-34</option>
-                      <option>35-44</option>
-                      <option>45+</option>
-                    </select>
-                  </div>
-                  <div>
-                    <label className="block text-sm text-gray-400 mb-2">Gender Split</label>
-                    <select 
-                      value={profile.audience.gender}
-                      onChange={e => setProfile({...profile, audience: {...profile.audience, gender: e.target.value}})}
-                      className="w-full bg-black/40 border border-white/10 rounded-xl p-3 text-white outline-none focus:border-[#8B5CF6] transition-all"
-                    >
-                      <option>Balanced</option>
-                      <option>Male Dominant</option>
-                      <option>Female Dominant</option>
-                    </select>
-                  </div>
-                </div>
-              </motion.div>
-            )}
-
-            {step === 3 && (
-              <motion.div key="step3" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="flex-1">
-                <h2 className="text-xl font-bold mb-6 flex items-center gap-2">
-                  <Smartphone className="text-[#EC4899]" /> Platforms
-                </h2>
-                <div className="flex gap-2 mb-6">
-                  {Object.keys(PLATFORM_ICONS).map(p => (
-                    <button
-                      key={p}
-                      onClick={() => addPlatform(p)}
-                      className="p-2 bg-zinc-800 rounded-lg hover:bg-zinc-700 text-gray-400 hover:text-white transition-colors"
-                    >
-                      {PLATFORM_ICONS[p]({ size: 20 })}
-                    </button>
-                  ))}
-                </div>
-                <div className="space-y-3 max-h-[300px] overflow-y-auto">
-                  {profile.platforms.map((p, i) => (
-                    <div key={p.id} className="flex items-center gap-3 bg-black/40 p-3 rounded-xl border border-white/10">
-                      {PLATFORM_ICONS[p.id]({ size: 20, className: "text-gray-400" })}
-                      <input 
-                        value={p.handle}
-                        onChange={e => updatePlatform(i, 'handle', e.target.value)}
-                        className="bg-transparent border-none text-sm text-white outline-none w-1/3"
-                        placeholder="@handle"
-                      />
-                      <input 
-                        value={p.followers}
-                        onChange={e => updatePlatform(i, 'followers', e.target.value)}
-                        className="bg-transparent border-none text-sm text-white outline-none w-1/3 text-right"
-                        placeholder="10k"
-                      />
-                    </div>
-                  ))}
-                  {profile.platforms.length === 0 && (
-                    <p className="text-gray-500 text-center py-8">Select platforms above to add them.</p>
-                  )}
-                </div>
-              </motion.div>
-            )}
-
-            {step === 4 && (
-              <motion.div key="step4" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="flex-1">
-                <h2 className="text-xl font-bold mb-6 flex items-center gap-2">
-                  <ShoppingBag className="text-[#3B82F6]" /> Offers & Products
-                </h2>
-                <div className="space-y-4">
-                  <div className="p-4 bg-black/40 border border-white/10 rounded-xl flex items-center justify-between">
-                    <div>
-                      <h3 className="font-bold">Digital Product</h3>
-                      <p className="text-sm text-gray-400">E-books, presets, courses</p>
-                    </div>
-                    <button className="px-3 py-1 bg-white/10 rounded-lg text-sm hover:bg-white/20 transition-colors">Add</button>
-                  </div>
-                  <div className="p-4 bg-black/40 border border-white/10 rounded-xl flex items-center justify-between">
-                    <div>
-                      <h3 className="font-bold">Affiliate Link</h3>
-                      <p className="text-sm text-gray-400">Amazon, software, etc.</p>
-                    </div>
-                    <button className="px-3 py-1 bg-white/10 rounded-lg text-sm hover:bg-white/20 transition-colors">Add</button>
-                  </div>
-                  <div className="p-4 bg-black/40 border border-white/10 rounded-xl flex items-center justify-between">
-                    <div>
-                      <h3 className="font-bold">Consulting</h3>
-                      <p className="text-sm text-gray-400">1:1 calls, coaching</p>
-                    </div>
-                    <button className="px-3 py-1 bg-white/10 rounded-lg text-sm hover:bg-white/20 transition-colors">Add</button>
-                  </div>
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
-
-          <div className="mt-8 flex justify-end">
-            <button
-              onClick={handleNext}
-              className="px-6 py-3 bg-gradient-to-r from-[#3B82F6] to-[#8B5CF6] text-white font-bold rounded-xl hover:opacity-90 transition-all flex items-center gap-2 shadow-lg"
-            >
-              {step === 4 ? 'Finish Setup' : 'Next Step'} <ArrowRight size={18} />
-            </button>
-          </div>
-        </div>
-      </div>
-    );
-  }
 
   // --- Render: Dashboard ---
   return (
@@ -286,16 +96,16 @@ export default function MonetizePage() {
             Overview
           </button>
           <button 
-            onClick={() => setActiveTab('mediakit')}
-            className={cn("px-4 py-2 rounded-lg text-sm font-medium transition-colors", activeTab === 'mediakit' ? "bg-white text-black" : "text-gray-400 hover:text-white")}
+            onClick={() => navigate('/app/outreach')}
+            className="px-4 py-2 rounded-lg text-sm font-medium text-gray-400 hover:text-white transition-colors"
           >
-            Media Kit
+            Sponsor Outreach
           </button>
           <button 
-            onClick={() => setActiveTab('links')}
-            className={cn("px-4 py-2 rounded-lg text-sm font-medium transition-colors", activeTab === 'links' ? "bg-white text-black" : "text-gray-400 hover:text-white")}
+            onClick={() => navigate('/app/mediakit')}
+            className="px-4 py-2 rounded-lg text-sm font-medium text-gray-400 hover:text-white transition-colors"
           >
-            Link Hub
+            Media Kit Architect
           </button>
         </div>
       </div>
@@ -303,13 +113,13 @@ export default function MonetizePage() {
       <AnimatePresence mode="wait">
         {activeTab === 'overview' && (
           <motion.div key="overview" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-12">
               <div className="bg-[#0A0E1A]/60 backdrop-blur-xl border border-white/10 rounded-2xl p-6 shadow-xl">
                 <div className="flex items-center gap-3 mb-2 text-gray-400">
                   <DollarSign size={20} className="text-[#3B82F6]" />
-                  <span>Estimated Revenue</span>
+                  <span>Revenue</span>
                 </div>
-                <div className="text-3xl font-bold">$1,240.00</div>
+                <div className="text-3xl font-bold">${stats.revenue.toLocaleString()}</div>
                 <div className="text-xs text-[#3B82F6] mt-2">+12% this month</div>
               </div>
               <div className="bg-[#0A0E1A]/60 backdrop-blur-xl border border-white/10 rounded-2xl p-6 shadow-xl">
@@ -317,15 +127,23 @@ export default function MonetizePage() {
                   <TrendingUp size={20} className="text-[#8B5CF6]" />
                   <span>Link Clicks</span>
                 </div>
-                <div className="text-3xl font-bold">8,432</div>
+                <div className="text-3xl font-bold">{stats.clicks.toLocaleString()}</div>
                 <div className="text-xs text-[#8B5CF6] mt-2">+5% this month</div>
               </div>
               <div className="bg-[#0A0E1A]/60 backdrop-blur-xl border border-white/10 rounded-2xl p-6 shadow-xl">
                 <div className="flex items-center gap-3 mb-2 text-gray-400">
-                  <ShoppingBag size={20} className="text-[#EC4899]" />
-                  <span>Active Deals</span>
+                  <Users size={20} className="text-[#EC4899]" />
+                  <span>Kit Views</span>
                 </div>
-                <div className="text-3xl font-bold">3</div>
+                <div className="text-3xl font-bold">{stats.mediaKitViews}</div>
+                <div className="text-xs text-[#EC4899] mt-2">Live Analytics</div>
+              </div>
+              <div className="bg-[#0A0E1A]/60 backdrop-blur-xl border border-white/10 rounded-2xl p-6 shadow-xl">
+                <div className="flex items-center gap-3 mb-2 text-gray-400">
+                  <ShoppingBag size={20} className="text-gray-400" />
+                  <span>Deals</span>
+                </div>
+                <div className="text-3xl font-bold">{stats.deals}</div>
                 <div className="text-xs text-gray-500 mt-2">2 pending</div>
               </div>
             </div>
@@ -356,7 +174,7 @@ export default function MonetizePage() {
                 <div className="mb-8">
                   <h3 className="text-xl font-bold mb-2">About Me</h3>
                   <p className="text-gray-600 leading-relaxed">
-                    {profile.bio || "Content creator passionate about tech and lifestyle. Creating engaging content for a global audience."}
+                    Content creator passionate about tech and lifestyle. Creating engaging content for a global audience.
                   </p>
                 </div>
 
@@ -364,16 +182,15 @@ export default function MonetizePage() {
                   <div>
                     <h4 className="font-bold mb-2">Audience</h4>
                     <ul className="text-sm text-gray-600 space-y-1">
-                      <li>Age: {profile.audience.age}</li>
-                      <li>Loc: {profile.audience.location}</li>
+                      <li>Age: 18-34</li>
+                      <li>Loc: Global</li>
                     </ul>
                   </div>
                   <div>
                     <h4 className="font-bold mb-2">Reach</h4>
                     <ul className="text-sm text-gray-600 space-y-1">
-                      {profile.platforms.length > 0 ? profile.platforms.map(p => (
-                        <li key={p.id} className="capitalize">{p.id}: {p.followers}</li>
-                      )) : <li>Instagram: 10k</li>}
+                      <li>Instagram: 10k</li>
+                      <li>YouTube: 5k</li>
                     </ul>
                   </div>
                 </div>

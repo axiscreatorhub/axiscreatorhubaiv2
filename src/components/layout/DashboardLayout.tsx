@@ -13,7 +13,13 @@ import {
   Settings,
   Menu,
   X,
-  Sparkles
+  Sparkles,
+  FileText,
+  User,
+  RefreshCw,
+  Send,
+  ImageIcon,
+  TrendingUp
 } from 'lucide-react';
 import { cn } from '../../lib/utils';
 import { motion, AnimatePresence } from 'motion/react';
@@ -27,7 +33,12 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const navItems = [
     { href: '/app', label: 'Home', icon: Home, exact: true },
     { href: '/app/create', label: 'Create', icon: PlusCircle },
-    { href: '/app/edit', label: 'Edit', icon: Edit3 },
+    { href: '/app/scripts', label: 'Scripts', icon: FileText },
+    { href: '/app/repurpose', label: 'Repurpose', icon: RefreshCw },
+    { href: '/app/outreach', label: 'Outreach', icon: Send },
+    { href: '/app/thumbnails', label: 'Thumbnails', icon: ImageIcon },
+    { href: '/app/predict', label: 'Predict', icon: TrendingUp },
+    { href: '/app/mediakit', label: 'Media Kit', icon: User },
     { href: '/app/assist', label: 'Assist', icon: Bot },
     { href: '/app/publish', label: 'Publish', icon: Calendar },
     { href: '/app/monetize', label: 'Monetize', icon: DollarSign },

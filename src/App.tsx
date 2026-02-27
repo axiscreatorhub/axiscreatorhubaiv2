@@ -14,6 +14,13 @@ import ProtectedRoute from './components/layout/ProtectedRoute';
 import OnboardingPage from './pages/app/Onboarding';
 import HomePage from './pages/app/Home';
 import CreatePage from './pages/app/Create';
+import ScriptsPage from './pages/app/Scripts';
+import MediaKitPage from './pages/app/MediaKit';
+import RepurposePage from './pages/app/Repurpose';
+import OutreachPage from './pages/app/Outreach';
+import ThumbnailStrategyPage from './pages/app/ThumbnailStrategy';
+import PerformancePredictorPage from './pages/app/PerformancePredictor';
+import PublicMediaKit from './pages/public/PublicMediaKit';
 import EditPage from './pages/app/Edit';
 import AssistPage from './pages/app/Assist';
 import PublishPage from './pages/app/Publish';
@@ -48,12 +55,19 @@ export default function App() {
           <Route path="/" element={<LandingPage />} />
           <Route path="/sign-in/*" element={<SignInPage />} />
           <Route path="/sign-up/*" element={<SignUpPage />} />
+          <Route path="/m/:slug" element={<PublicMediaKit />} />
 
           {/* Protected App Routes */}
           <Route path="/app" element={<ProtectedRoute />}>
             <Route element={<DashboardLayout><OnboardingPage /></DashboardLayout>} path="onboarding" />
             <Route element={<DashboardLayout><HomePage /></DashboardLayout>} index />
             <Route element={<DashboardLayout><CreatePage /></DashboardLayout>} path="create" />
+            <Route element={<DashboardLayout><ScriptsPage /></DashboardLayout>} path="scripts" />
+            <Route element={<DashboardLayout><MediaKitPage /></DashboardLayout>} path="mediakit" />
+            <Route element={<DashboardLayout><RepurposePage /></DashboardLayout>} path="repurpose" />
+            <Route element={<DashboardLayout><OutreachPage /></DashboardLayout>} path="outreach" />
+            <Route element={<DashboardLayout><ThumbnailStrategyPage /></DashboardLayout>} path="thumbnails" />
+            <Route element={<DashboardLayout><PerformancePredictorPage /></DashboardLayout>} path="predict" />
             <Route element={<DashboardLayout><EditPage /></DashboardLayout>} path="edit" />
             <Route element={<DashboardLayout><AssistPage /></DashboardLayout>} path="assist" />
             <Route element={<DashboardLayout><PublishPage /></DashboardLayout>} path="publish" />

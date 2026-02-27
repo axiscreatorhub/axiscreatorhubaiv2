@@ -30,19 +30,17 @@ type Format = {
 };
 
 const FORMATS: Format[] = [
-  { id: 'tiktok', label: 'TikTok Video', icon: Smartphone, description: 'Viral short-form video scripts', color: 'from-[#3B82F6] to-[#8B5CF6]', endpoint: '/hooks/generate' },
-  { id: 'reel', label: 'Instagram Reel', icon: Video, description: 'Trending audio & visual concepts', color: 'from-[#8B5CF6] to-[#EC4899]', endpoint: '/hooks/generate' },
-  { id: 'short', label: 'YouTube Short', icon: Youtube, description: 'High-retention short scripts', color: 'from-[#EC4899] to-[#3B82F6]', endpoint: '/hooks/generate' },
+  { id: 'tiktok', label: 'TikTok Video', icon: Smartphone, description: 'Viral short-form video scripts', color: 'from-[#3B82F6] to-[#8B5CF6]', endpoint: '/scripts/generate' },
+  { id: 'reel', label: 'Instagram Reel', icon: Video, description: 'Trending audio & visual concepts', color: 'from-[#8B5CF6] to-[#EC4899]', endpoint: '/scripts/generate' },
+  { id: 'short', label: 'YouTube Short', icon: Youtube, description: 'High-retention short scripts', color: 'from-[#EC4899] to-[#3B82F6]', endpoint: '/scripts/generate' },
   { id: 'image', label: 'AI Image', icon: ImageIcon, description: 'Thumbnails & post visuals', color: 'from-[#3B82F6] via-[#8B5CF6] to-[#EC4899]', endpoint: '/assets/generate' },
-  { id: 'carousel', label: 'Carousel', icon: Layers, description: 'Multi-slide educational posts', color: 'from-[#8B5CF6] to-[#3B82F6]', endpoint: '/hooks/generate' },
-  { id: 'script', label: 'Long Script', icon: FileText, description: 'Full length video scripts', color: 'from-[#EC4899] to-[#8B5CF6]', endpoint: '/hooks/generate' },
 ];
 
 const STYLES = [
-  { id: 'minimal', label: 'Minimalist', preview: 'bg-[#0A0E1A]' },
-  { id: 'bold', label: 'Bold & Loud', preview: 'bg-[#EC4899]' },
-  { id: 'professional', label: 'Professional', preview: 'bg-[#3B82F6]' },
-  { id: 'cinematic', label: 'Cinematic', preview: 'bg-[#8B5CF6]' },
+  { id: 'MrBeast', label: 'MrBeast Style', preview: 'bg-red-500' },
+  { id: 'Minimalist', label: 'Minimalist', preview: 'bg-white' },
+  { id: 'Glowy', label: 'Glowy Editorial', preview: 'bg-purple-500' },
+  { id: 'Tech', label: 'Tech / Futuristic', preview: 'bg-blue-500' },
 ];
 
 const SAMPLE_PROMPTS = [
@@ -81,14 +79,16 @@ export default function CreatePage() {
       let endpoint = selectedFormat.endpoint;
 
       if (selectedFormat.id === 'image') {
-        body = { type: 'THUMBNAIL', prompt: `${selectedStyle.label} style: ${prompt}` };
+        body = { 
+          type: 'THUMBNAIL', 
+          prompt, 
+          style: selectedStyle.id,
+          size: '1K' 
+        };
       } else {
-        // For video/scripts, we use the hooks endpoint for now to generate the text content
-        // In a real app, this might call a video gen endpoint
         body = { 
           topic: prompt, 
-          tone: selectedStyle.label, 
-          format: selectedFormat.label 
+          format: selectedFormat.id.toUpperCase() 
         };
       }
 
@@ -318,7 +318,14 @@ export default function CreatePage() {
                   </div>
                 ) : (
                   <div className="space-y-6">
-                    {result.hooks && Array.isArray(result.hooks) ? (
+                    {result.content ? (
+                      <div className="space-y-4">
+                        <h3 className="font-bold text-lg text-gray-200">Generated Script</h3>
+                        <div className="p-6 bg-black border border-white/10 rounded-2xl font-mono text-sm leading-relaxed whitespace-pre-wrap text-gray-300">
+                          {result.content}
+                        </div>
+                      </div>
+                    ) : result.hooks && Array.isArray(result.hooks) ? (
                       <div className="space-y-4">
                         <h3 className="font-bold text-lg text-gray-200">Generated Scripts/Hooks</h3>
                         {result.hooks.map((hook: string, i: number) => (

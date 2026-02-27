@@ -24,6 +24,7 @@ model User {
   usage        UsageLedger[]
   hooks        HookBatch[]
   assets       AssetJob[]
+  scripts      Script[]
 
   @@index([clerkId])
   @@index([email])
@@ -38,12 +39,47 @@ model BrandProfile {
   niche     String?
   audience  String?
   platforms String   @default("[]") // JSON string for array
+  slug      String?  @unique // For public media kit URL
+  bio       String?  @db.Text
+  links     String   @default("[]") // JSON string for social links
+  stats     String   @default("{}") // JSON string for follower counts etc
+  referenceContent String? @db.Text // For "AI Brand Clone" training
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  mediaKit MediaKit?
 
   @@map("brand_profiles")
+}
+
+model MediaKit {
+  id             String   @id @default(uuid())
+  brandProfileId String   @unique
+  theme          String   @default("MODERN") // Enum: MODERN, MINIMAL, BOLD
+  isPublic       Boolean  @default(false)
+  viewCount      Int      @default(0)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  brandProfile BrandProfile @relation(fields: [brandProfileId], references: [id], onDelete: Cascade)
+
+  @@map("media_kits")
+}
+
+model Script {
+  id        String   @id @default(uuid())
+  userId    String
+  topic     String
+  format    String   // e.g. "TIKTOK", "REELS", "SHORTS"
+  content   String   @db.Text // The generated script
+  viralScore Int?     // 1-100
+  storyboard String?  @db.Text // JSON string for storyboard scenes
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("scripts")
 }
 
 model Subscription {
