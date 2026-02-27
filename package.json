@@ -16,10 +16,12 @@
     "clsx": "^2.1.0",
     "framer-motion": "^11.0.0",
     "lucide-react": "^0.344.0",
+    "motion": "^12.34.3",
     "next": "^14.2.25",
     "prisma": "^5.10.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-router-dom": "^7.13.1",
     "svix": "^1.15.0",
     "tailwind-merge": "^2.2.0"
   },
