@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { GoogleGenAI } from "@google/genai";
+import { GoogleGenerativeAI } from "@google/generative-ai";
 import ShareModal from './ShareModal';
 import UserDashboard from './UserDashboard';
 
@@ -80,7 +80,7 @@ const CreatorStudio: React.FC<{ isNexus?: boolean }> = ({ isNexus = false }) => 
     setIsProcessing(true);
     setResult(null);
 
-    const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+    const ai = new GoogleGenerativeAI({ apiKey: process.env.API_KEY });
     
     try {
       if (activeTab === 'video') {

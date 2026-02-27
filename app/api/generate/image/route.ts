@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { auth } from '@clerk/nextjs/server';
 import { assertEntitled } from '@/lib/entitlements';
 import { prisma } from '@/lib/prisma';
-import { GoogleGenAI } from "@google/genai";
+import { GoogleGenerativeAI } from "@google/generative-ai";
 
 export async function POST(req: Request) {
   const { userId } = await auth();
@@ -16,7 +16,7 @@ export async function POST(req: Request) {
     await assertEntitled(userId, 'image');
 
     // 2. Initialize Gemini for Imagen
-    const ai = new GoogleGenAI({ apiKey: process.env.NEXT_PUBLIC_GEMINI_API_KEY });
+    const ai = new GoogleGenerativeAI({ apiKey: process.env.NEXT_PUBLIC_GEMINI_API_KEY });
     
     // Using Imagen 4.0 for high-quality generation
     const response = await ai.models.generateImages({

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { GoogleGenAI } from "@google/genai";
+import { GoogleGenerativeAI } from "@google/generative-ai";
 
 type ContentType = 'blog' | 'caption' | 'script';
 
@@ -50,7 +50,7 @@ const AIContentFactory: React.FC = () => {
     setResult('');
 
     try {
-      const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+      const ai = new GoogleGenerativeAI({ apiKey: process.env.API_KEY });
       const tool = TOOLS.find(t => t.id === activeTool);
       if (!tool) return;
 

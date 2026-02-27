@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { GoogleGenAI } from "@google/genai";
+import { GoogleGenerativeAI } from "@google/generative-ai";
 
 const IntelligenceLab: React.FC = () => {
   const [activeAnalysis, setActiveAnalysis] = useState<'market' | 'media'>('market');
@@ -15,7 +15,7 @@ const IntelligenceLab: React.FC = () => {
     setIsAnalyzing(true);
     setUrls([]);
     try {
-      const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+      const ai = new GoogleGenerativeAI({ apiKey: process.env.API_KEY });
       // Optimized: Use Flash for high-speed search grounding
       const response = await ai.models.generateContent({
         model: 'gemini-3-flash-preview',
@@ -36,7 +36,7 @@ const IntelligenceLab: React.FC = () => {
     if (!query) return;
     setIsAnalyzing(true);
     try {
-      const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+      const ai = new GoogleGenerativeAI({ apiKey: process.env.API_KEY });
       // Maps grounding is already fast on Flash 2.5
       const response = await ai.models.generateContent({
         model: 'gemini-2.5-flash',

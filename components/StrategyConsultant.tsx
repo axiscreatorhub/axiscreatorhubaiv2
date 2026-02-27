@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { GoogleGenAI, GenerateContentResponse } from "@google/genai";
+import { GoogleGenerativeAI, GenerateContentResponse } from "@google/generative-ai";
 
 const StrategyConsultant: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -8,7 +8,7 @@ const StrategyConsultant: React.FC = () => {
   const [isThinking, setIsThinking] = useState(false);
   const [isStreaming, setIsStreaming] = useState(false);
   
-  const chatRef = useRef<ReturnType<GoogleGenAI['chats']['create']> | null>(null);
+  const chatRef = useRef<ReturnType<GoogleGenerativeAI['chats']['create']> | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -28,7 +28,7 @@ const StrategyConsultant: React.FC = () => {
 
   const initChat = () => {
     if (!chatRef.current) {
-      const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+      const ai = new GoogleGenerativeAI({ apiKey: process.env.API_KEY });
       chatRef.current = ai.chats.create({
         model: 'gemini-3-pro-preview',
         config: {
