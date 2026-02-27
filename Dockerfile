@@ -2,6 +2,7 @@
 # 1) Build stage
 # =========================
 FROM node:20-slim AS build
+RUN apt-get update -y && apt-get install -y openssl && rm -rf /var/lib/apt/lists/*
 WORKDIR /app
 
 # Install dependencies
