@@ -182,6 +182,73 @@ export const textService = {
     }
   },
 
+  async analyzeCompetitor(competitorUrl: string, niche: string, brand?: BrandProfileContext) {
+    if (!aiClient) throw new Error("Gemini API Key not configured");
+
+    const brandContext = brand 
+      ? `Your Brand Context: Name: ${brand.name}, Niche: ${brand.niche}, Tone: ${brand.tone}.`
+      : "";
+
+    const prompt = `Analyze the content strategy of a competitor in the ${niche} niche based on their profile/URL: ${competitorUrl}.
+    ${brandContext}
+    
+    Provide a strategic analysis including:
+    1. Content Pillars (What topics do they cover most?).
+    2. Engagement Hooks (What techniques do they use to keep viewers?).
+    3. Competitive Gaps (What are they missing that you could exploit?).
+    4. Actionable Tactics (3 specific things you can adopt or improve upon).
+    
+    Output as a JSON object: { "pillars": string[], "hooks": string[], "gaps": string[], "tactics": string[] }`;
+
+    try {
+      const response = await aiClient.models.generateContent({
+        model: "gemini-3-flash-preview",
+        contents: prompt,
+        config: {
+          responseMimeType: "application/json"
+        }
+      });
+      return JSON.parse(response.text);
+    } catch (error) {
+      console.error("Competitor Analysis Error:", error);
+      throw error;
+    }
+  },
+
+  async generateContentCalendar(niche: string, brand?: BrandProfileContext) {
+    if (!aiClient) throw new Error("Gemini API Key not configured");
+
+    const brandContext = brand 
+      ? `Brand Context: Name: ${brand.name}, Niche: ${brand.niche}, Tone: ${brand.tone}.`
+      : "";
+
+    const prompt = `Generate a 7-day viral content calendar for the ${niche} niche.
+    ${brandContext}
+    
+    For each day, provide:
+    1. Day (1-7).
+    2. Video Topic.
+    3. Hook Idea.
+    4. Platform Focus (TikTok/Reels/Shorts).
+    5. Goal (Growth/Engagement/Monetization).
+    
+    Output as a JSON array of objects: { "day": number, "topic": string, "hook": string, "platform": string, "goal": string }`;
+
+    try {
+      const response = await aiClient.models.generateContent({
+        model: "gemini-3-flash-preview",
+        contents: prompt,
+        config: {
+          responseMimeType: "application/json"
+        }
+      });
+      return JSON.parse(response.text);
+    } catch (error) {
+      console.error("Content Calendar Error:", error);
+      throw error;
+    }
+  },
+
   async generatePitch(sponsorName: string, sponsorDescription: string, brand: BrandProfileContext, stats: any) {
     if (!aiClient) throw new Error("Gemini API Key not configured");
 

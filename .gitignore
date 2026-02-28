@@ -1,29 +1,8 @@
-# env
-.env
-.env.*
-.env.local
-
-# node
 node_modules/
-**/node_modules/
-
-# build outputs
+build/
 dist/
-**/dist/
-backend/
-.next
-
-
-# Local / secrets
-.env
-.env.*
-!.env.example
-# Next build output
-.next
-# Node
-node_modules
-# Vercel
-.vercel
-# Logs
+coverage/
+.DS_Store
 *.log
-
+.env*
+!.env.example

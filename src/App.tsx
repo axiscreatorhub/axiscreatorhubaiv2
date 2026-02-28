@@ -20,6 +20,8 @@ import RepurposePage from './pages/app/Repurpose';
 import OutreachPage from './pages/app/Outreach';
 import ThumbnailStrategyPage from './pages/app/ThumbnailStrategy';
 import PerformancePredictorPage from './pages/app/PerformancePredictor';
+import CompetitorAnalysisPage from './pages/app/CompetitorAnalysis';
+import ContentCalendarPage from './pages/app/ContentCalendar';
 import PublicMediaKit from './pages/public/PublicMediaKit';
 import EditPage from './pages/app/Edit';
 import AssistPage from './pages/app/Assist';
@@ -68,6 +70,8 @@ export default function App() {
             <Route element={<DashboardLayout><OutreachPage /></DashboardLayout>} path="outreach" />
             <Route element={<DashboardLayout><ThumbnailStrategyPage /></DashboardLayout>} path="thumbnails" />
             <Route element={<DashboardLayout><PerformancePredictorPage /></DashboardLayout>} path="predict" />
+            <Route element={<DashboardLayout><CompetitorAnalysisPage /></DashboardLayout>} path="intelligence" />
+            <Route element={<DashboardLayout><ContentCalendarPage /></DashboardLayout>} path="calendar" />
             <Route element={<DashboardLayout><EditPage /></DashboardLayout>} path="edit" />
             <Route element={<DashboardLayout><AssistPage /></DashboardLayout>} path="assist" />
             <Route element={<DashboardLayout><PublishPage /></DashboardLayout>} path="publish" />

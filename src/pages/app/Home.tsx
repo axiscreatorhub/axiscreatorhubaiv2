@@ -18,7 +18,8 @@ import {
   Rocket,
   FileText,
   Send,
-  Split
+  Split,
+  Calendar
 } from 'lucide-react';
 import { apiClient, useAppAuth } from '../../lib/api';
 
@@ -59,8 +60,8 @@ export default function HomePage() {
   const quickActions = [
     { label: 'Viral Script', icon: PenTool, color: 'from-[#3B82F6] to-[#8B5CF6]', href: '/app/scripts' },
     { label: 'A/B Strategy', icon: Split, color: 'from-[#8B5CF6] to-[#EC4899]', href: '/app/thumbnails' },
-    { label: 'Pro Pitch', icon: Send, color: 'from-[#EC4899] to-[#3B82F6]', href: '/app/outreach' },
-    { label: 'AI Brain', icon: Brain, color: 'from-[#3B82F6] via-[#8B5CF6] to-[#EC4899]', href: '/app/assist' },
+    { label: 'Intelligence', icon: Search, color: 'from-[#EC4899] to-[#3B82F6]', href: '/app/intelligence' },
+    { label: 'Viral Calendar', icon: Calendar, color: 'from-[#3B82F6] via-[#8B5CF6] to-[#EC4899]', href: '/app/calendar' },
   ];
 
   return (

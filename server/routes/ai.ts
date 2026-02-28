@@ -100,6 +100,51 @@ router.post('/pitch', requireAuth, async (req, res) => {
   }
 });
 
+// Analyze Competitor
+router.post('/analyze-competitor', requireAuth, async (req, res) => {
+  try {
+    const { competitorUrl } = req.body;
+    const userId = req.user.id;
+    const brand = await prisma.brandProfile.findUnique({ where: { userId } });
+
+    const brandContext = brand ? {
+      name: brand.name || '',
+      niche: brand.niche || '',
+      tone: brand.tone || '',
+      audience: brand.audience || '',
+      platforms: brand.platforms ? JSON.parse(brand.platforms) : []
+    } : undefined;
+
+    const niche = brand?.niche || 'General Content';
+    const result = await textService.analyzeCompetitor(competitorUrl, niche, brandContext);
+    res.json(result);
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Content Calendar
+router.post('/content-calendar', requireAuth, async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const brand = await prisma.brandProfile.findUnique({ where: { userId } });
+
+    const brandContext = brand ? {
+      name: brand.name || '',
+      niche: brand.niche || '',
+      tone: brand.tone || '',
+      audience: brand.audience || '',
+      platforms: brand.platforms ? JSON.parse(brand.platforms) : []
+    } : undefined;
+
+    const niche = brand?.niche || 'General Content';
+    const result = await textService.generateContentCalendar(niche, brandContext);
+    res.json(result);
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 // Predict Video Performance
 router.post('/predict-performance', requireAuth, async (req, res) => {
   try {

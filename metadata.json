@@ -1,10 +1,5 @@
 {
-  "name": "AXIS Creator OS",
-  "short_name": "AXIS",
-  "description": "The ultimate AI-powered Creator OS. From side hustle to full-time influencer. Generate viral scripts, aesthetic visuals, and high-converting video content for Instagram, TikTok, and YouTube.",
-  "start_url": "./",
-  "display": "standalone",
-  "background_color": "#020617",
-  "theme_color": "#8b5cf6",
+  "name": "AXIS",
+  "description": "The world's first AI Operating System for high-growth creators. Transcend the algorithm with viral hooks, aesthetic assets, and automated brand scaling.",
   "requestFramePermissions": []
 }

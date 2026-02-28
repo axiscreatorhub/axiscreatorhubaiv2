@@ -19,7 +19,8 @@ import {
   RefreshCw,
   Send,
   ImageIcon,
-  TrendingUp
+  TrendingUp,
+  Search
 } from 'lucide-react';
 import { cn } from '../../lib/utils';
 import { motion, AnimatePresence } from 'motion/react';
@@ -38,6 +39,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     { href: '/app/outreach', label: 'Outreach', icon: Send },
     { href: '/app/thumbnails', label: 'Thumbnails', icon: ImageIcon },
     { href: '/app/predict', label: 'Predict', icon: TrendingUp },
+    { href: '/app/intelligence', label: 'Intelligence', icon: Search },
+    { href: '/app/calendar', label: 'Calendar', icon: Calendar },
     { href: '/app/mediakit', label: 'Media Kit', icon: User },
     { href: '/app/assist', label: 'Assist', icon: Bot },
     { href: '/app/publish', label: 'Publish', icon: Calendar },

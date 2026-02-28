@@ -1,49 +1,46 @@
-# =========================
-# 1) Build stage
-# =========================
-FROM node:20-slim AS build
-RUN apt-get update -y && apt-get install -y openssl && rm -rf /var/lib/apt/lists/*
+# Multi-stage build for optimized image
+FROM node:20-alpine AS builder
+
 WORKDIR /app
 
 # Install dependencies
 COPY package*.json ./
 RUN npm ci
 
-# Copy source
+# Copy source code
 COPY . .
 
-# Generate Prisma client (safe at build time)
+# Generate Prisma Client
 RUN npx prisma generate
 
-# Build frontend (Vite -> dist)
+# Build Frontend (Vite)
 RUN npm run build
 
-# Compile server.ts -> server.js
-RUN npx tsc server.ts \
-  --target ES2022 \
-  --module commonjs \
-  --moduleResolution node \
-  --esModuleInterop \
-  --skipLibCheck \
-  --outDir /app
+# Build Backend (TSC)
+RUN npx tsc -p tsconfig.server.json
 
+# --- Production Stage ---
+FROM node:20-alpine AS runner
 
-# =========================
-# 2) Runtime stage
-# =========================
-FROM node:20-slim
 WORKDIR /app
 
 ENV NODE_ENV=production
-ENV PORT=8080
-EXPOSE 8080
+ENV PORT=3000
 
-# Install only production deps
+# Install production dependencies only
 COPY package*.json ./
 RUN npm ci --omit=dev
 
-# Copy built assets + compiled server
-COPY --from=build /app/dist ./dist
-COPY --from=build /app/server.js ./server.js
+# Copy built artifacts
+COPY --from=builder /app/dist ./dist
+COPY --from=builder /app/dist-server ./dist-server
+COPY --from=builder /app/prisma ./prisma
 
-CMD ["node", "server.js"]
+# Generate Prisma Client again for production environment
+RUN npx prisma generate
+
+# Expose port
+EXPOSE 3000
+
+# Start command: Run migrations then start server
+CMD npx prisma migrate deploy && node dist-server/server.js
